@@ -292,10 +292,10 @@ const STORAGE_KEY = 'chess-plan-neal-v2';
    1) Crée un projet gratuit sur supabase.com
    2) Colle ton URL de projet et ta clé "anon public" ci-dessous
    3) Sans ça, le site continue de marcher en local uniquement (pas de synchro) */
-const SUPABASE_URL = "https://hzhcqlnfzhzeacxlwply.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aGNxbG5memh6ZWFjeGx3cGx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Mzg5NDcsImV4cCI6MjEwNDUxNDk0N30.25ZgG9jc8n0Y82s_nondnO6SL51CAfpWV2DjQOzLHSY
-";
+const SUPABASE_URL = "https://hzhcqlnfzhzeacxlwply.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aGNxbG5memh6ZWFjeGx3cGx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Mzg5NDcsImV4cCI6MjEwNDUxNDk0N30.25ZgG9jc8n0Y82s_nondnO6SL51CAfpWV2DjQOzLHSY";
 const PLAN_ID = 'neal';
+
 let supa = null;
 if(SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.length > 10 && window.supabase){
   supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
