@@ -34,7 +34,7 @@ avec une date de test optionnelle).
 | `SMTP_PASS` | **oui** | — (mot de passe d'application Gmail de `sinizown@gmail.com`) |
 | `SMTP_USER` | non | `MAIL_FROM` |
 | `MAIL_FROM` | non | `sinizown@gmail.com` |
-| `MAIL_TO_NEAL` | non | `neal.toussaint@live.fr` |
+| `MAIL_TO_NEAL` | non | `toussaintneal@live.fr` |
 | `MAIL_TO_KEVIN` | non | `kevin.degeyter@outlook.com` |
 | `SUPABASE_URL` | non | valeur publique du site |
 | `SUPABASE_ANON_KEY` | non | valeur publique du site |

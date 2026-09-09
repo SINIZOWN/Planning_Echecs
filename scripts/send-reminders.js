@@ -15,7 +15,7 @@
  *   SMTP_USER        (def. = MAIL_FROM)
  *   SMTP_PASS        (requis — mot de passe d'application Gmail)
  *   MAIL_FROM        (def. sinizown@gmail.com)
- *   MAIL_TO_NEAL     (def. neal.toussaint@live.fr)
+ *   MAIL_TO_NEAL     (def. toussaintneal@live.fr)
  *   MAIL_TO_KEVIN    (def. kevin.degeyter@outlook.com)
  *   SUPABASE_URL     (def. valeur publique du site)
  *   SUPABASE_ANON_KEY(def. valeur publique du site)
@@ -36,7 +36,7 @@ const SUPABASE_ANON_KEY =
 const MAIL_FROM = process.env.MAIL_FROM || 'sinizown@gmail.com';
 
 const RECIPIENTS = [
-  { plan: 'neal', name: 'Neal', email: process.env.MAIL_TO_NEAL || 'neal.toussaint@live.fr' },
+  { plan: 'neal', name: 'Neal', email: process.env.MAIL_TO_NEAL || 'toussaintneal@live.fr' },
   { plan: 'kevin', name: 'Kevin', email: process.env.MAIL_TO_KEVIN || 'kevin.degeyter@outlook.com' },
 ];
 
