@@ -1,0 +1,13 @@
+{
+  "name": "planning-echecs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Planning d'entraînement échecs (Neal & Kevin) + rappels quotidiens par e-mail.",
+  "scripts": {
+    "send-reminders": "node scripts/send-reminders.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.14"
+  }
+}

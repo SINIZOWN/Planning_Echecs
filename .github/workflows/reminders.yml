@@ -1,0 +1,44 @@
+name: Rappels quotidiens
+
+on:
+  schedule:
+    # 06:00 UTC ≈ 07:00 à Bruxelles en hiver, 08:00 en été.
+    # GitHub Actions ne gère pas les fuseaux : ajuste l'heure ici si besoin.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Date à traiter (YYYY-MM-DD). Vide = aujourd'hui (Bruxelles)."
+        required: false
+      dry_run:
+        description: "true = n'envoie rien, log seulement"
+        required: false
+        default: 'false'
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install --no-audit --no-fund
+
+      - name: Envoyer les rappels
+        run: node scripts/send-reminders.js
+        env:
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: '465'
+          SMTP_SECURE: 'true'
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO_NEAL: ${{ secrets.MAIL_TO_NEAL }}
+          MAIL_TO_KEVIN: ${{ secrets.MAIL_TO_KEVIN }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          REMINDER_DATE: ${{ github.event.inputs.date }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}

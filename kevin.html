@@ -7,7 +7,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
-
   :root{
     --wood-dark:#241a12; --wood:#2f2216; --wood-light:#3c2c1c;
     --cream:#f1e9d8; --cream-dim:#cbbfa4; --gold:#c79a4b; --line:#4a3826;
@@ -27,21 +26,16 @@
     color:var(--cream); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh;
   }
   .wrap{max-width:1180px;margin:0 auto;padding:40px 28px 90px;}
-
   nav.site{display:flex;gap:6px;margin-bottom:30px;flex-wrap:wrap;}
-  nav.site a{
-    color:var(--cream-dim);text-decoration:none;font-size:12.5px;padding:6px 12px;
-    border:1px solid var(--line);border-radius:6px;
-  }
+  nav.site a{color:var(--cream-dim);text-decoration:none;font-size:12.5px;padding:6px 12px;border:1px solid var(--line);border-radius:6px;}
   nav.site a.active{background:var(--gold);color:#241a12;border-color:var(--gold);font-weight:600;}
-
   header.top{margin-bottom:32px;}
   .kicker{font-size:13px;letter-spacing:.04em;color:var(--gold);font-weight:500;margin-bottom:10px;}
   h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,4vw,42px);line-height:1.05;margin:0 0 14px;}
   h1 em{font-style:italic;color:var(--gold);font-weight:500;}
   .lede{max-width:640px;color:var(--cream-dim);font-size:15px;line-height:1.6;}
 
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:30px 0 36px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:26px 0 12px;}
   .stat{background:var(--wood);padding:16px 18px;}
   .stat .dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:7px;}
   .stat .label{font-size:12px;color:var(--cream-dim);display:flex;align-items:center;margin-bottom:8px;}
@@ -50,6 +44,9 @@
   .stat .bar{height:4px;background:var(--wood-light);border-radius:2px;margin-top:9px;position:relative;}
   .stat .bar-fill{height:100%;border-radius:2px;transition:width .3s ease;}
   .stat .bar-target{position:absolute;top:-2px;width:2px;height:8px;background:var(--cream);opacity:.55;}
+  .period-sel{display:flex;gap:6px;margin-bottom:20px;}
+  .period-sel button{background:var(--wood-light);border:1px solid var(--line);color:var(--cream-dim);font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;}
+  .period-sel button.active{background:var(--gold);color:#241a12;border-color:var(--gold);font-weight:600;}
 
   .panel{background:var(--wood);border:1px solid var(--line);border-radius:12px;padding:22px 22px 26px;margin-bottom:36px;}
   .panel-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:16px;flex-wrap:wrap;}
@@ -59,70 +56,65 @@
   .icon-btn{background:transparent;color:var(--cream-dim);border:1px solid var(--line);border-radius:7px;padding:8px 11px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
   .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
   .add-btn{background:var(--gold);color:#241a12;border:none;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;}
-
   .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--cream-dim);}
   .legend-sw{width:10px;height:10px;border-radius:3px;}
-
   .view-toggle{display:flex;background:var(--wood-light);border:1px solid var(--line);border-radius:7px;padding:2px;}
   .vt-btn{background:transparent;border:none;color:var(--cream-dim);font-size:12px;font-weight:600;padding:6px 11px;border-radius:5px;cursor:pointer;}
   .vt-btn.active{background:var(--gold);color:#241a12;}
 
-  .cal{display:grid;grid-template-columns:52px repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;user-select:none;}
-  .cal-day-head{background:var(--wood-light);border-bottom:1px solid var(--line);border-left:1px solid var(--line);padding:8px 4px;text-align:center;font-size:11.5px;font-weight:600;}
-  .cal-day-head .d{display:block;font-size:10px;font-weight:400;color:var(--cream-dim);}
-  .cal-corner{background:var(--wood-light);border-bottom:1px solid var(--line);}
-  .cal-hours{border-right:1px solid var(--line);}
-  .cal-hour-label{height:32px;font-size:10px;color:var(--cream-dim);text-align:right;padding-right:6px;position:relative;top:-6px;}
-  .cal-body-wrap{position:relative;grid-column:2/9;}
-  .cal-grid-bg{position:relative;display:grid;grid-template-columns:repeat(7,1fr);background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--line) 31px, var(--line) 32px);}
-  .cal-col{border-left:1px solid var(--line);position:relative;}
-  .cal-col.weekend{background:rgba(199,154,75,0.035);}
-  .session-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:5px 7px;font-size:10.5px;line-height:1.3;cursor:grab;border:1px solid rgba(255,255,255,0.12);box-shadow:0 2px 6px rgba(0,0,0,0.35);z-index:3;overflow:hidden;}
-  .session-block:active{cursor:grabbing;z-index:20;}
-  .session-block.dragging{opacity:.85;box-shadow:0 8px 18px rgba(0,0,0,0.5);}
-  .t-time{font-weight:700;font-size:10px;opacity:.9;}
-  .t-cat{font-size:9px;text-transform:uppercase;letter-spacing:.03em;opacity:.75;margin-top:1px;}
-  .t-theme{margin-top:2px;font-size:10px;opacity:.92;}
+  /* Month calendar */
+  .monthnav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;}
+  .monthnav .mn-title{font-family:'Fraunces',serif;font-size:16px;font-weight:600;min-width:170px;text-align:center;text-transform:capitalize;}
+  .mn-btn{background:transparent;border:1px solid var(--line);color:var(--cream);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:14px;}
+  .mn-today{background:transparent;border:1px solid var(--line);color:var(--cream-dim);border-radius:6px;padding:6px 10px;font-size:11.5px;cursor:pointer;}
+  .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .month-head{background:var(--wood-light);padding:7px 0;text-align:center;font-size:10.5px;font-weight:600;color:var(--cream-dim);}
+  .day-cell{background:var(--wood);min-height:64px;padding:5px 6px;cursor:pointer;position:relative;}
+  .day-cell:hover{background:var(--wood-light);}
+  .day-cell.other-month{opacity:.35;}
+  .day-cell.is-today .day-num{background:var(--gold);color:#241a12;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;}
+  .day-cell.is-selected{outline:2px solid var(--gold);outline-offset:-2px;}
+  .day-num{font-size:11.5px;color:var(--cream-dim);}
+  .day-dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;}
+  .day-dot{width:6px;height:6px;border-radius:2px;}
+  .day-more{font-size:9px;color:var(--cream-dim);margin-top:2px;}
+
+  /* Day panel + Agenda cards (shared) */
+  .day-panel{margin-top:16px;border:1px solid var(--line);border-radius:9px;padding:14px 16px;background:var(--wood-light);}
+  .day-panel h4{font-family:'Fraunces',serif;font-size:14.5px;margin:0 0 10px;color:var(--gold);text-transform:capitalize;}
+  .agenda{max-height:600px;overflow-y:auto;}
+  .agenda-date-title{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--gold);margin:14px 0 7px;text-transform:capitalize;}
+  .agenda-date-title:first-child{margin-top:0;}
+  .event-card{border-radius:8px;border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;padding:11px 12px;}
+  .event-card.status-done{outline:1px solid var(--ok);}
+  .event-card.status-missed{outline:1px solid var(--bad);opacity:.75;}
+  .ev-top{display:flex;align-items:center;gap:10px;}
+  .ev-time{font-weight:700;font-size:12.5px;white-space:nowrap;min-width:88px;}
+  .ev-body{flex:1;min-width:0;}
+  .ev-cat{font-size:10px;text-transform:uppercase;letter-spacing:.03em;opacity:.75;margin-bottom:1px;}
+  .ev-theme{font-size:12.5px;line-height:1.35;}
+  .ev-theme.strike{text-decoration:line-through;opacity:.7;}
+  .ev-notes{font-size:11.5px;color:var(--cream-dim);margin-top:4px;line-height:1.4;}
+  .ev-comment{font-size:11px;color:var(--gold);margin-top:3px;font-style:italic;}
+  .ev-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .ev-link{font-size:10.5px;background:var(--wood);border:1px solid var(--line);border-radius:5px;padding:3px 8px;color:var(--gold);text-decoration:none;}
+  .ev-link:hover{border-color:var(--gold);}
+  .ev-actions{display:flex;gap:5px;flex-shrink:0;}
+  .ev-act{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--cream-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .ev-act.on-done{background:var(--ok);border-color:var(--ok);color:#12261a;}
+  .ev-act.on-missed{background:var(--bad);border-color:var(--bad);color:#2b120c;}
+  .ev-act:hover{border-color:var(--gold);}
+  .agenda-empty{font-size:13px;color:var(--cream-dim);padding:14px 0;text-align:center;}
 
   .cat-tactique{background:var(--c-tactique-soft);border-left:3px solid var(--c-tactique);}
   .cat-finales{background:var(--c-finales-soft);border-left:3px solid var(--c-finales);}
   .cat-strategie{background:var(--c-strategie-soft);border-left:3px solid var(--c-strategie);}
   .cat-parties{background:var(--c-parties-soft);border-left:3px solid var(--c-parties);}
   .cat-bonus{background:var(--c-bonus-soft);border-left:3px dashed var(--c-bonus);}
-
   .hint{font-size:12px;color:var(--cream-dim);margin-top:12px;}
 
-  /* Week nav */
-  .weeknav{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--wood-light);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
-  .weeknav .wn-mid{text-align:center;flex:1;min-width:160px;}
-  .weeknav .wn-week{font-family:'Fraunces',serif;font-size:15px;font-weight:600;}
-  .weeknav .wn-range{font-size:11.5px;color:var(--cream-dim);}
-  .weeknav .wn-progress{font-size:11px;color:var(--gold);margin-top:2px;}
-  .wn-btn{background:transparent;border:1px solid var(--line);color:var(--cream);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:14px;}
-  .wn-today{background:transparent;border:1px solid var(--line);color:var(--cream-dim);border-radius:6px;padding:6px 10px;font-size:11.5px;cursor:pointer;}
-
-  /* Agenda */
-  .agenda{display:none;}
-  .agenda-day{margin-bottom:16px;}
-  .agenda-day-title{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--gold);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--line);}
-  .agenda-card{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);margin-bottom:7px;}
-  .agenda-card.status-done{outline:1px solid var(--ok);}
-  .agenda-card.status-missed{outline:1px solid var(--bad);opacity:.75;}
-  .agenda-card .a-time{font-weight:700;font-size:12.5px;white-space:nowrap;min-width:88px;}
-  .agenda-card .a-body{flex:1;min-width:0;}
-  .agenda-card .a-cat{font-size:10px;text-transform:uppercase;letter-spacing:.03em;opacity:.75;margin-bottom:1px;}
-  .agenda-card .a-theme{font-size:12.5px;line-height:1.35;}
-  .agenda-card .a-theme.strike{text-decoration:line-through;opacity:.7;}
-  .agenda-card .a-comment{font-size:11px;color:var(--gold);margin-top:3px;font-style:italic;}
-  .a-actions{display:flex;gap:5px;flex-shrink:0;}
-  .a-act{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--cream-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
-  .a-act.on-done{background:var(--ok);border-color:var(--ok);color:#12261a;}
-  .a-act.on-missed{background:var(--bad);border-color:var(--bad);color:#2b120c;}
-  .a-act:hover{border-color:var(--gold);}
-  .agenda-empty{font-size:13px;color:var(--cream-dim);padding:14px 0;text-align:center;}
-
-  /* Curriculum */
+  /* Curriculum (inchangé) */
   .phase{margin-bottom:28px;}
   .phase-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;}
   .phase-head h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0;}
@@ -135,13 +127,11 @@
   table.curr td.tag{width:3px;padding:0;}
   .tag-tactique{background:var(--c-tactique);} .tag-finales{background:var(--c-finales);} .tag-strategie{background:var(--c-strategie);}
 
-  /* Tips */
   .tips{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
   .tip{background:var(--wood-light);border:1px solid var(--line);border-radius:9px;padding:15px 16px;}
   .tip h4{font-family:'Fraunces',serif;font-size:14px;margin:0 0 5px;color:var(--gold);font-weight:600;}
   .tip p{margin:0;font-size:12px;color:var(--cream-dim);line-height:1.5;}
 
-  /* History */
   .history{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;}
   .hist-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12px;}
   .hist-row:last-child{border-bottom:none;}
@@ -149,17 +139,16 @@
   .hist-text{color:var(--cream);}
   .hist-empty{padding:16px;text-align:center;color:var(--cream-dim);font-size:12.5px;}
 
-  /* Modal */
   .overlay{position:fixed;inset:0;background:rgba(10,7,4,0.65);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
   .overlay.open{display:flex;}
-  .modal{background:var(--wood-light);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:400px;max-height:85vh;overflow-y:auto;}
+  .modal{background:var(--wood-light);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;}
   .modal h3{font-family:'Fraunces',serif;margin:0 0 16px;font-size:18px;font-weight:600;}
   .field{margin-bottom:13px;}
   .field label{display:block;font-size:11.5px;color:var(--cream-dim);margin-bottom:5px;}
   .field select,.field input,.field textarea{width:100%;background:var(--wood);border:1px solid var(--line);color:var(--cream);padding:8px 10px;border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;}
-  .field textarea{resize:vertical;min-height:60px;}
+  .field textarea{resize:vertical;min-height:56px;}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-  .row4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .row3{display:grid;grid-template-columns:2fr 1fr auto;gap:6px;align-items:center;}
   .modal-actions{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
   .btn{border:none;border-radius:7px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
   .btn-primary{background:var(--gold);color:#241a12;}
@@ -172,19 +161,23 @@
   .stars{display:flex;gap:4px;font-size:20px;}
   .stars span{cursor:pointer;opacity:.3;}
   .stars span.filled{opacity:1;}
-  .modal-link{background:none;border:none;color:var(--gold);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+  .link-row{display:flex;gap:6px;margin-bottom:6px;}
+  .link-row input{flex:1;}
+  .link-remove{background:transparent;border:1px solid var(--line);color:var(--cream-dim);border-radius:6px;width:32px;cursor:pointer;flex-shrink:0;}
+  .add-link-btn{background:transparent;border:1px dashed var(--line);color:var(--cream-dim);border-radius:6px;padding:7px;width:100%;cursor:pointer;font-size:12px;}
+  .row4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 
   @media (max-width:820px){
     .stats{grid-template-columns:repeat(2,1fr);}
     .tips{grid-template-columns:1fr;}
     .row4{grid-template-columns:repeat(2,1fr);}
+    .day-cell{min-height:48px;}
     .wrap{padding:28px 16px 70px;}
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <nav class="site">
     <a href="index.html">Accueil</a>
     <a href="neal.html">Neal</a>
@@ -194,24 +187,26 @@
   <header class="top">
     <div class="kicker">Programme personnel — dossier confidentiel</div>
     <h1>Le plan d'entraînement de <em>Kevin</em></h1>
-    <p class="lede">7h sérieuses par semaine réparties entre tactique, finales, stratégie et parties commentées — plus quelques séances bonus qui ne comptent pour rien, sauf le moral. Coche tes séances faites, ajoute un commentaire, et retrouve tout l'historique de tes modifications ci-dessous.</p>
+    <p class="lede">Chaque séance a sa propre date, ses liens et ses notes — le planning n'est plus obligé de se répéter à l'identique chaque semaine. Coche tes séances faites, commente-les, et retrouve tout l'historique de tes modifications ci-dessous.</p>
   </header>
 
   <div class="stats" id="stats"></div>
+  <div class="period-sel" id="periodSel"></div>
 
   <div class="panel">
     <div class="panel-head">
       <div>
-        <h2>Semaine type</h2>
-        <p>Le planning récurrent — glisse un bloc pour changer jour/heure, clique dessus pour tout modifier.</p>
+        <h2>Calendrier</h2>
+        <p>Clique sur un jour pour voir ou ajouter une séance à cette date précise.</p>
       </div>
       <div class="btns">
         <div class="view-toggle" id="viewToggle">
+          <button class="vt-btn" data-view="month" onclick="setView('month')">Calendrier</button>
           <button class="vt-btn" data-view="agenda" onclick="setView('agenda')">Agenda</button>
-          <button class="vt-btn" data-view="cal" onclick="setView('cal')">Calendrier</button>
         </div>
+        <button class="icon-btn" onclick="openSeries()">🔁 Série</button>
         <button class="icon-btn" onclick="openSettings()">⚙ Réglages</button>
-        <button class="add-btn" onclick="openTemplateModal()">+ Ajouter</button>
+        <button class="add-btn" onclick="openEventModal()">+ Ajouter</button>
         <button class="icon-btn" onclick="resetAll()" title="Réinitialiser">↺</button>
       </div>
     </div>
@@ -219,290 +214,210 @@
     <div class="legend" id="legend"></div>
     <div id="syncBadge" style="font-size:11px;color:var(--cream-dim);margin:-6px 0 14px;">○ Local uniquement</div>
 
-    <div class="cal" id="calView">
-      <div class="cal-corner"></div>
-      <div id="dayHeads" style="display:contents;"></div>
-      <div class="cal-hours" id="hourLabels"></div>
-      <div class="cal-body-wrap"><div class="cal-grid-bg" id="calGrid"></div></div>
-    </div>
-    <p class="hint" id="calHint">Grille de 08:00 à 23:00. Cette vue édite le planning type (récurrent) — pour cocher une séance faite semaine par semaine, utilise la vue Agenda.</p>
-
-    <div id="weekNav" class="weeknav" style="display:none;">
-      <button class="wn-btn" onclick="changeWeek(-1)">‹</button>
-      <div class="wn-mid">
-        <div class="wn-week" id="wnWeek"></div>
-        <div class="wn-range" id="wnRange"></div>
-        <div class="wn-progress" id="wnProgress"></div>
+    <div id="monthView">
+      <div class="monthnav">
+        <button class="mn-btn" onclick="changeMonth(-1)">‹</button>
+        <div class="mn-title" id="mnTitle"></div>
+        <button class="mn-btn" onclick="changeMonth(1)">›</button>
+        <button class="mn-today" onclick="jumpTodayMonth()">Aujourd'hui</button>
       </div>
-      <button class="wn-btn" onclick="changeWeek(1)">›</button>
-      <button class="wn-today" onclick="jumpToday()">Aujourd'hui</button>
+      <div class="month-grid" id="monthGrid"></div>
+      <div id="dayPanel" class="day-panel" style="display:none;"></div>
     </div>
-    <div id="agenda" class="agenda"></div>
-    <p class="hint" id="agendaHint">✓ = fait · ✗ = non fait · 💬 = commentaire &amp; ressenti. Oui, même la bière peut être cochée.</p>
+
+    <div id="agendaView" class="agenda" style="display:none;"></div>
+    <p class="hint">💬 = commentaire &amp; ressenti · 🔗 = liens (vidéo, étude...) · ✏️ = modifier tous les détails de la séance.</p>
   </div>
 
   <div class="panel">
     <div class="panel-head">
-      <div><h2>Feuille de route — 15 semaines</h2><p id="dateRange"></p></div>
+      <div><h2>Feuille de route — repères sur 15 semaines</h2><p id="dateRange"></p></div>
     </div>
     <div id="curriculum"></div>
   </div>
 
   <div class="panel">
     <div class="panel-head">
-      <div><h2>Pour que Kevin progresse plus vite</h2><p>Quelques principes à appliquer en plus du planning (la bière du vendredi n'en fait pas partie, mais on l'a casée quand même).</p></div>
+      <div><h2>Pour que Kevin progresse plus vite</h2><p>Quelques principes à appliquer en plus du planning.</p></div>
     </div>
     <div class="tips">
       <div class="tip"><h4>Répétition espacée</h4><p>Note les puzzles tactiques ratés et retente-les 3–4 jours plus tard. C'est ce qui fixe les motifs en mémoire.</p></div>
       <div class="tip"><h4>Analyse tes propres parties</h4><p>Repère seul les 2–3 moments critiques avant de lancer le moteur. C'est cet effort qui crée le vrai progrès.</p></div>
       <div class="tip"><h4>Un thème à la fois</h4><p>Ne mélange pas trop de sujets dans une même séance. 60–90 min sur un seul motif ancre mieux l'apprentissage.</p></div>
       <div class="tip"><h4>Cadence longue le samedi</h4><p>Réserve ta séance du samedi à des parties en cadence lente (15+10 min.) suivies d'une auto-analyse.</p></div>
-      <div class="tip"><h4>Mesure ta progression</h4><p>Suis ton rating tactique et ton taux de réussite par thème. Sous 70% après deux semaines : prolonge le thème.</p></div>
+      <div class="tip"><h4>Un lien vaut mille mots</h4><p>Colle le lien de la vidéo ou de l'étude directement sur la séance — tu gagnes le temps de la chercher le jour J.</p></div>
       <div class="tip"><h4>Finales avant ouvertures</h4><p>À ce volume horaire, finales et tactique rapportent bien plus que l'étude d'ouvertures. Garde un répertoire minimal.</p></div>
       <div class="tip"><h4>La bière n'est pas une variante d'ouverture</h4><p>Le vendredi soir bonus est là pour souffler, pas pour tester un gambit à l'aveugle après trois pintes. Kevin, on te voit aussi.</p></div>
-      <div class="tip"><h4>Le repos, ce coup qu'on oublie de calculer</h4><p>Ton tournoi se termine le 31 octobre. Prends au moins une journée sans échiquier juste après — même les meilleurs joueurs ferment parfois le capot.</p></div>
+      <div class="tip"><h4>Le repos, ce coup qu'on oublie de calculer</h4><p>Ton tournoi se termine le 31 octobre. Prends au moins une journée sans échiquier juste après.</p></div>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-head">
-      <div><h2>Historique des modifications</h2><p>Chaque changement de planning, chaque séance cochée ou commentée est archivé ici, horodaté.</p></div>
+      <div><h2>Historique des modifications</h2><p>Chaque changement est archivé ici, horodaté.</p></div>
       <button class="icon-btn" onclick="clearHistory()">Vider l'historique</button>
     </div>
     <div class="history" id="history"></div>
   </div>
-
 </div>
 
-<div class="overlay" id="overlay">
-  <div class="modal" id="modalBox"></div>
-</div>
+<div class="overlay" id="overlay"><div class="modal" id="modalBox"></div></div>
 
 <script>
 const DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-const DAY_SHORT = ['LUN','MAR','MER','JEU','VEN','SAM','DIM'];
-const GRID_START = 8, GRID_END = 23, CELL_H = 32;
-const TOTAL_H = GRID_END - GRID_START;
 const CAT_LABEL = {tactique:'Tactique', finales:'Finales', strategie:'Stratégie', parties:'Parties', bonus:'Bonus fun'};
 const CAT_COLOR = {tactique:'#c1502e', finales:'#3d7ab5', strategie:'#4f8f5c', parties:'#9370b0', bonus:'#d9668c'};
 const SERIOUS_CATS = ['tactique','finales','strategie','parties'];
-const STORAGE_KEY = 'chess-plan-kevin-v2';
+const STORAGE_KEY = 'chess-plan-kevin-v3';
 
-/* ---------- Supabase (base cloud partagée) ----------
-   1) Crée un projet gratuit sur supabase.com
-   2) Colle ton URL de projet et ta clé "anon public" ci-dessous
-   3) Sans ça, le site continue de marcher en local uniquement (pas de synchro) */
+/* ---------- Supabase ---------- */
 const SUPABASE_URL = "https://hzhcqlnfzhzeacxlwply.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aGNxbG5memh6ZWFjeGx3cGx5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5Mzg5NDcsImV4cCI6MjEwNDUxNDk0N30.25ZgG9jc8n0Y82s_nondnO6SL51CAfpWV2DjQOzLHSY";
-const PLAN_ID = 'Kevin';
+const PLAN_ID = 'kevin';
 let supa = null;
 if(SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.length > 10 && window.supabase){
   supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 let lastUpdatedAt = null;
 
-let sessions = [
-  {id:1, day:0, start:20*60, dur:90,  cat:'tactique', theme:'Motifs de base : fourchette & clouage'},
-  {id:2, day:1, start:20*60, dur:105, cat:'finales',  theme:"Roi et pion contre roi : l’opposition"},
-  {id:3, day:2, start:20*60, dur:105, cat:'strategie',theme:'Structures de pions : isolé, doublé, arriéré'},
-  {id:4, day:3, start:20*60, dur:50,  cat:'tactique', theme:'Enfilade & attaque à la découverte'},
-  {id:5, day:5, start:10*60, dur:70,  cat:'parties',  theme:'Partie longue cadence + auto-analyse'},
-  {id:6, day:4, start:20*60, dur:60,  cat:'bonus',    theme:"Bière tactique entre potes — un demi, un puzzle, zéro arbitre pour vérifier ton rating"},
-  {id:7, day:6, start:9*60,  dur:30,  cat:'bonus',    theme:"Yoga du Cavalier — étirer les hanches comme le cavalier saute les cases"},
-];
-let nextId = 8;
-let occurrences = {};   // key "week_sessionId" -> {status, comment, rating, ts}
+/* ---------- Data ---------- */
+let events = [];
+let nextId = 1;
 let changeLog = [];
 let settings = { weeklyGoalMin:420, targets:{tactique:33,finales:25,strategie:25,parties:17}, totalWeeks:15, startDateISO:null };
 
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function parseYmd(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y, m-1, d); }
+function timeStr(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+function parseTime(str){ const [h,m]=str.split(':').map(Number); return h*60+m; }
+function nextMonday(){ const d=new Date(); const day=d.getDay(); const diff=(8-day)%7||7; d.setDate(d.getDate()+diff); d.setHours(0,0,0,0); return d; }
+function startDate(){ return settings.startDateISO ? new Date(settings.startDateISO) : nextMonday(); }
+function fmtRange(start){ const end=new Date(start); end.setDate(end.getDate()+6); return `${start.toLocaleDateString('fr-FR',{day:'numeric'})}–${end.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`; }
+
+/* ---------- Seed (première utilisation) ---------- */
+const basePattern = [
+  {dow:0, start:20*60, dur:90,  cat:'tactique', theme:'Motifs de base : fourchette & clouage'},
+  {dow:1, start:20*60, dur:105, cat:'finales',  theme:"Roi et pion contre roi : l’opposition"},
+  {dow:2, start:20*60, dur:105, cat:'strategie',theme:'Structures de pions : isolé, doublé, arriéré'},
+  {dow:3, start:20*60, dur:50,  cat:'tactique', theme:'Enfilade & attaque à la découverte'},
+  {dow:5, start:10*60, dur:70,  cat:'parties',  theme:'Partie longue cadence + auto-analyse'},
+  {dow:4, start:20*60, dur:60,  cat:'bonus',    theme:"Bière tactique entre potes — un demi, un puzzle, zéro arbitre pour vérifier ton rating"},
+  {dow:6, start:9*60,  dur:30,  cat:'bonus',    theme:"Yoga du Cavalier — étirer les hanches comme le cavalier saute les cases"},
+];
+const taperPattern = [
+  {dow:0, start:20*60, dur:40, cat:'tactique', theme:'Puzzles déjà maîtrisés uniquement (affûtage)'},
+  {dow:2, start:20*60, dur:30, cat:'finales', theme:'Relecture de la fiche mémo de finales types'},
+  {dow:4, start:20*60, dur:30, cat:'strategie', theme:'Survol du répertoire d’ouvertures — surface, pas de profondeur'},
+  {dow:5, start:10*60, dur:90, cat:'parties', theme:'Ronde 1 du tournoi 🏆'},
+];
+const tournamentPattern = [0,1,2,3,4,5].map(dow=>({dow, start:18*60, dur:15, cat:'tactique', theme:'Échauffement tactique avant la ronde'}));
+const recoveryPattern = [
+  {dow:1, start:20*60, dur:90, cat:'strategie', theme:'Analyse approfondie des parties du tournoi'},
+];
+function seedDefaultEvents(){
+  const out = []; let id = 1;
+  const start0 = nextMonday();
+  for(let w=1; w<=15; w++){
+    const pattern = w===6?taperPattern : w===7?tournamentPattern : w===8?recoveryPattern : basePattern;
+    pattern.forEach(p=>{
+      const d = new Date(start0); d.setDate(d.getDate() + (w-1)*7 + p.dow);
+      out.push({id:id++, date:ymd(d), start:p.start, dur:p.dur, cat:p.cat, theme:p.theme, notes:'', links:[], status:null, comment:'', rating:0});
+    });
+  }
+  return out;
+}
+
 /* ---------- Persistence ---------- */
 function setSyncBadge(state){
-  const el = document.getElementById('syncBadge');
-  if(!el) return;
-  const map = {
-    off: ['○ Local uniquement', 'var(--cream-dim)'],
-    ok:  ['☁ Synchronisé', 'var(--gold)'],
-    sync:['☁ Mis à jour depuis un autre appareil', 'var(--gold)'],
-    err: ['⚠ Erreur de synchro', '#e08066'],
-  };
-  const [txt, col] = map[state] || map.off;
-  el.textContent = txt; el.style.color = col;
+  const el = document.getElementById('syncBadge'); if(!el) return;
+  const map = { off:['○ Local uniquement','var(--cream-dim)'], ok:['☁ Synchronisé','var(--gold)'], sync:['☁ Mis à jour depuis un autre appareil','var(--gold)'], err:['⚠ Erreur de synchro','#e08066'] };
+  const [txt,col] = map[state]||map.off; el.textContent = txt; el.style.color = col;
 }
 function applyData(d){
-  if(d.sessions && d.sessions.length) sessions = d.sessions;
-  if(d.occurrences) occurrences = d.occurrences;
+  if(d.events) events = d.events; else if(!events.length) events = seedDefaultEvents();
   if(d.changeLog) changeLog = d.changeLog;
   if(d.settings) settings = Object.assign(settings, d.settings);
-  if(d.nextId) nextId = d.nextId;
+  nextId = events.length ? Math.max(...events.map(e=>e.id), d.nextId||0) + 1 : (d.nextId || 1);
 }
-function saveLocal(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({sessions, occurrences, changeLog, settings, nextId})); }catch(e){}
-}
-function loadLocal(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) applyData(JSON.parse(raw));
-  }catch(e){}
-}
+function saveLocal(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({events, changeLog, settings, nextId})); }catch(e){} }
+function loadLocal(){ try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) applyData(JSON.parse(raw)); }catch(e){} }
 async function saveAll(){
   saveLocal();
-  if(!supa) { setSyncBadge('off'); return; }
+  if(!supa){ setSyncBadge('off'); return; }
   try{
     const nowIso = new Date().toISOString();
-    const payload = {sessions, occurrences, changeLog, settings, nextId};
-    const {error} = await supa.from('plans').upsert({id: PLAN_ID, data: payload, updated_at: nowIso});
-    if(error){ setSyncBadge('err'); console.error(error); }
-    else { lastUpdatedAt = nowIso; setSyncBadge('ok'); }
+    const {error} = await supa.from('plans').upsert({id:PLAN_ID, data:{events, changeLog, settings, nextId}, updated_at:nowIso});
+    if(error){ setSyncBadge('err'); console.error(error); } else { lastUpdatedAt = nowIso; setSyncBadge('ok'); }
   }catch(e){ setSyncBadge('err'); }
 }
 async function loadAll(){
-  loadLocal(); // affichage immédiat depuis le cache local pendant que le réseau répond
+  loadLocal();
+  if(!events.length) events = seedDefaultEvents();
   if(!supa){ setSyncBadge('off'); return; }
   try{
     const {data, error} = await supa.from('plans').select('data, updated_at').eq('id', PLAN_ID).maybeSingle();
-    if(!error && data){
-      applyData(data.data);
-      lastUpdatedAt = data.updated_at;
-      saveLocal();
-      setSyncBadge('ok');
-    } else if(!error && !data){
-      await saveAll(); // rien en ligne : on pousse l'état de départ
-    } else { setSyncBadge('err'); }
+    if(!error && data){ applyData(data.data); lastUpdatedAt = data.updated_at; saveLocal(); setSyncBadge('ok'); }
+    else if(!error && !data){ await saveAll(); }
+    else setSyncBadge('err');
   }catch(e){ setSyncBadge('err'); }
 }
 async function pollRemote(){
   if(!supa) return;
-  if(document.getElementById('overlay').classList.contains('open')) return; // pas d'écrasement pendant une saisie
+  if(document.getElementById('overlay').classList.contains('open')) return;
   try{
     const {data, error} = await supa.from('plans').select('data, updated_at').eq('id', PLAN_ID).maybeSingle();
     if(!error && data && data.updated_at !== lastUpdatedAt){
-      applyData(data.data);
-      lastUpdatedAt = data.updated_at;
-      saveLocal();
-      renderGrid(); renderAgenda(); renderStats(); renderCurriculum(); renderHistory();
-      setSyncBadge('sync');
+      applyData(data.data); lastUpdatedAt = data.updated_at; saveLocal();
+      renderAll(); setSyncBadge('sync');
     }
   }catch(e){}
 }
-
-function nextMonday(){
-  const d = new Date(); const day = d.getDay(); const diff = (8-day)%7 || 7;
-  d.setDate(d.getDate()+diff); d.setHours(0,0,0,0); return d;
-}
-
-function logChange(text){
-  changeLog.unshift({ts:Date.now(), text});
-  if(changeLog.length>200) changeLog.pop();
-  saveAll();
-  renderHistory();
-}
+function logChange(text){ changeLog.unshift({ts:Date.now(), text}); if(changeLog.length>200) changeLog.pop(); saveAll(); renderHistory(); }
 async function resetAll(){
   if(!confirm("Tout effacer (planning, historique, commentaires) sur tous les appareils et repartir de zéro ?")) return;
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
   if(supa){ try{ await supa.from('plans').delete().eq('id', PLAN_ID); }catch(e){} }
   location.reload();
 }
-function clearHistory(){
-  if(!confirm("Vider uniquement l'historique des modifications ?")) return;
-  changeLog = [];
-  saveAll();
-  renderHistory();
-}
+function clearHistory(){ if(!confirm("Vider uniquement l'historique ?")) return; changeLog=[]; saveAll(); renderHistory(); }
 
-
-/* ---------- Helpers ---------- */
-function timeStr(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
-function parseTime(str){ const [h,m]=str.split(':').map(Number); return h*60+m; }
-function fmtRange(start){ const end=new Date(start); end.setDate(end.getDate()+6); return `${start.toLocaleDateString('fr-FR',{day:'numeric'})}–${end.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`; }
-function relTime(ts){
-  const diff = Date.now()-ts, m=Math.floor(diff/60000), h=Math.floor(m/60), d=Math.floor(h/24);
-  if(d>0) return d+'j';
-  if(h>0) return h+'h';
-  if(m>0) return m+'min';
-  return 'à l\u2019instant';
-}
-function startDate(){ return new Date(settings.startDateISO); }
-function currentWeekForToday(){
-  const diff = Math.floor((new Date()-startDate())/(7*86400000))+1;
-  return Math.min(settings.totalWeeks, Math.max(1, diff));
-}
-let selectedWeek = 1; // recalculé une fois les réglages chargés, dans init()
-
-/* ---------- Grid (template) ---------- */
-function renderHeads(){
-  document.getElementById('dayHeads').innerHTML = DAY_SHORT.map((d,i)=>`<div class="cal-day-head">${d}<span class="d">${DAYS[i].slice(0,3)}</span></div>`).join('');
-}
-function renderHourLabels(){
-  const el = document.getElementById('hourLabels');
-  let html=''; for(let h=GRID_START; h<GRID_END; h++) html += `<div class="cal-hour-label">${String(h).padStart(2,'0')}:00</div>`;
-  el.innerHTML = html; el.style.height = (TOTAL_H*CELL_H)+'px';
-}
-function renderGrid(){
-  const grid = document.getElementById('calGrid');
-  grid.style.height = (TOTAL_H*CELL_H)+'px';
-  let cols=''; for(let d=0; d<7; d++) cols += `<div class="cal-col${d>=5?' weekend':''}" data-day="${d}" style="height:${TOTAL_H*CELL_H}px;"></div>`;
-  grid.innerHTML = cols;
-  sessions.forEach(s=>{
-    const col = grid.querySelector(`.cal-col[data-day="${s.day}"]`);
-    const block = document.createElement('div');
-    block.className = `session-block cat-${s.cat}`;
-    block.dataset.id = s.id;
-    block.style.top = (((s.start/60)-GRID_START)*CELL_H)+'px';
-    block.style.height = Math.max((s.dur/60)*CELL_H,26)+'px';
-    block.innerHTML = `<div class="t-time">${timeStr(s.start)}–${timeStr(s.start+s.dur)}</div><div class="t-cat">${CAT_LABEL[s.cat]}</div><div class="t-theme">${s.theme}</div>`;
-    attachDrag(block, s.id);
-    col.appendChild(block);
-  });
-}
-let dragState = null;
-function attachDrag(block, id){
-  block.addEventListener('mousedown', (e)=>{
-    e.preventDefault();
-    const gridBody = document.getElementById('calGrid');
-    const gridRect = gridBody.getBoundingClientRect();
-    const s = sessions.find(x=>x.id===id);
-    dragState = {id, moved:false, startX:e.clientX, startY:e.clientY, origDay:s.day, origStart:s.start, colWidth:gridRect.width/7};
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-  });
-}
-function onDragMove(e){
-  if(!dragState) return;
-  const dx=e.clientX-dragState.startX, dy=e.clientY-dragState.startY;
-  if(Math.abs(dx)>4||Math.abs(dy)>4) dragState.moved=true;
-  if(!dragState.moved) return;
-  const block = document.querySelector(`.session-block[data-id="${dragState.id}"]`);
-  block.classList.add('dragging');
-  let newDay = Math.min(6, Math.max(0, dragState.origDay + Math.round(dx/dragState.colWidth)));
-  let minDelta = Math.round((dy/CELL_H)*60/15)*15;
-  let newStart = dragState.origStart + minDelta;
-  const s = sessions.find(x=>x.id===dragState.id);
-  newStart = Math.max(GRID_START*60, Math.min((GRID_END*60)-s.dur, newStart));
-  dragState.previewDay = newDay; dragState.previewStart = newStart;
-  const col = document.querySelector(`.cal-col[data-day="${newDay}"]`);
-  block.remove(); block.style.top = (((newStart/60)-GRID_START)*CELL_H)+'px';
-  col.appendChild(block);
-}
-function onDragEnd(){
-  document.removeEventListener('mousemove', onDragMove);
-  document.removeEventListener('mouseup', onDragEnd);
-  if(!dragState) return;
-  const s = sessions.find(x=>x.id===dragState.id);
-  if(dragState.moved){
-    const before = `${DAYS[s.day]} ${timeStr(s.start)}`;
-    s.day = dragState.previewDay; s.start = dragState.previewStart;
-    logChange(`« ${s.theme} » déplacée de ${before} à ${DAYS[s.day]} ${timeStr(s.start)}.`);
-    renderGrid(); renderAgenda(); renderStats();
-  } else {
-    openTemplateModal(dragState.id);
-  }
-  dragState = null;
+/* ---------- View toggle ---------- */
+let currentView = 'month';
+function setView(v){
+  currentView = v;
+  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  document.getElementById('monthView').style.display = v==='month' ? 'block' : 'none';
+  document.getElementById('agendaView').style.display = v==='agenda' ? 'block' : 'none';
+  if(v==='agenda') renderAgenda();
 }
 
 /* ---------- Stats ---------- */
+let statPeriod = 'week';
+function periodRange(){
+  if(statPeriod==='week'){
+    const today = new Date(); const dow=(today.getDay()+6)%7;
+    const mon = new Date(today); mon.setDate(today.getDate()-dow); mon.setHours(0,0,0,0);
+    const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+    return {from:ymd(mon), to:ymd(sun)};
+  }
+  if(statPeriod==='month'){
+    const from = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+    const to = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 0);
+    return {from:ymd(from), to:ymd(to)};
+  }
+  return {from:'0000-01-01', to:'9999-12-31'};
+}
+function renderPeriodSel(){
+  const labels = {week:'Cette semaine', month:'Ce mois', all:'Tout le programme'};
+  document.getElementById('periodSel').innerHTML = Object.keys(labels).map(p=>
+    `<button class="${p===statPeriod?'active':''}" onclick="setPeriod('${p}')">${labels[p]}</button>`).join('');
+}
+function setPeriod(p){ statPeriod=p; renderPeriodSel(); renderStats(); }
 function renderStats(){
+  const {from,to} = periodRange();
+  const inRange = events.filter(e=> e.date>=from && e.date<=to);
   const totals = {tactique:0,finales:0,strategie:0,parties:0}; let bonusTotal=0;
-  sessions.forEach(s=>{ if(s.cat==='bonus') bonusTotal+=s.dur; else totals[s.cat]+=s.dur; });
+  inRange.forEach(e=>{ if(e.cat==='bonus') bonusTotal+=e.dur; else if(totals[e.cat]!==undefined) totals[e.cat]+=e.dur; });
   const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
   document.getElementById('stats').innerHTML = SERIOUS_CATS.map(cat=>{
     const pct = grandTotal ? Math.round((totals[cat]/grandTotal)*100) : 0;
@@ -511,174 +426,232 @@ function renderStats(){
       <div class="val">${pct}%</div><div class="target">${h}h${m?String(m).padStart(2,'0'):''} · cible ${settings.targets[cat]}%</div>
       <div class="bar"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${CAT_COLOR[cat]}"></div><div class="bar-target" style="left:${settings.targets[cat]}%;"></div></div></div>`;
   }).join('') + `<div class="stat" style="grid-column:1/-1;background:var(--wood-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-      <div class="label" style="margin:0;">Total hebdomadaire sérieux</div>
-      <div class="val" style="font-size:19px;">${Math.floor(grandTotal/60)}h${grandTotal%60?String(grandTotal%60).padStart(2,'0'):''} <span style="font-size:12px;color:var(--cream-dim);font-weight:400;">/ ${(settings.weeklyGoalMin/60)}h visées</span></div>
-      ${bonusTotal?`<div style="font-size:11.5px;color:var(--c-bonus);width:100%;">+ ${Math.floor(bonusTotal/60)}h${bonusTotal%60?String(bonusTotal%60).padStart(2,'0'):''} de bonus fun 🍺🧘 — ne compte pour rien, sauf pour Neal</div>`:''}
+      <div class="label" style="margin:0;">Total ${statPeriod==='week'?'de la semaine':statPeriod==='month'?'du mois':'du programme'}</div>
+      <div class="val" style="font-size:19px;">${Math.floor(grandTotal/60)}h${grandTotal%60?String(grandTotal%60).padStart(2,'0'):''}${statPeriod==='week'?` <span style="font-size:12px;color:var(--cream-dim);font-weight:400;">/ ${(settings.weeklyGoalMin/60)}h visées</span>`:''}</div>
+      ${bonusTotal?`<div style="font-size:11.5px;color:var(--c-bonus);width:100%;">+ ${Math.floor(bonusTotal/60)}h${bonusTotal%60?String(bonusTotal%60).padStart(2,'0'):''} de bonus fun 🍺🧘</div>`:''}
     </div>`;
   document.getElementById('legend').innerHTML = SERIOUS_CATS.map(c=>`<div class="legend-item"><span class="legend-sw" style="background:${CAT_COLOR[c]}"></span>${CAT_LABEL[c]} · cible ${settings.targets[c]}%</div>`).join('')
     + `<div class="legend-item"><span class="legend-sw" style="background:transparent;border:2px dashed var(--c-bonus);"></span>Bonus fun · hors quota</div>`;
 }
 
-/* ---------- View toggle ---------- */
-let currentView = window.innerWidth < 820 ? 'agenda' : 'cal';
-function setView(v){
-  currentView = v;
-  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
-  document.getElementById('calView').style.display = v==='cal' ? 'grid' : 'none';
-  document.getElementById('calHint').style.display = v==='cal' ? 'block' : 'none';
-  document.getElementById('weekNav').style.display = v==='agenda' ? 'flex' : 'none';
-  document.getElementById('agenda').style.display = v==='agenda' ? 'block' : 'none';
-  document.getElementById('agendaHint').style.display = v==='agenda' ? 'block' : 'none';
-}
-
-/* ---------- Agenda (weekly occurrence tracking) ---------- */
-function occKey(week, id){ return week+'_'+id; }
-function getOcc(week, id){ return occurrences[occKey(week,id)] || {status:null, comment:'', rating:0}; }
-function setOcc(week, id, data){ occurrences[occKey(week,id)] = data; saveAll(); }
-
-function changeWeek(delta){
-  selectedWeek = Math.min(settings.totalWeeks, Math.max(1, selectedWeek+delta));
-  renderAgenda();
-}
-function jumpToday(){ selectedWeek = currentWeekForToday(); renderAgenda(); }
-
-function toggleStatus(id, status){
-  const cur = getOcc(selectedWeek, id);
-  const s = sessions.find(x=>x.id===id);
-  const next = cur.status===status ? null : status;
-  setOcc(selectedWeek, id, Object.assign({}, cur, {status:next, ts:Date.now()}));
-  logChange(`Semaine ${selectedWeek} — « ${s.theme} » marquée ${next==='done'?'faite ✓':next==='missed'?'non faite ✗':'non renseignée'}.`);
-  renderAgenda(); renderStats();
-}
-
-function renderAgenda(){
-  const wkStart = new Date(startDate()); wkStart.setDate(wkStart.getDate() + (selectedWeek-1)*7);
-  document.getElementById('wnWeek').textContent = `Semaine ${selectedWeek} / ${settings.totalWeeks}`;
-  document.getElementById('wnRange').textContent = fmtRange(wkStart);
-  const total = sessions.length;
-  const done = sessions.filter(s=>getOcc(selectedWeek,s.id).status==='done').length;
-  document.getElementById('wnProgress').textContent = `${done}/${total} séances cochées`;
-
-  const el = document.getElementById('agenda');
-  let html='';
-  for(let d=0; d<7; d++){
-    const daySessions = sessions.filter(s=>s.day===d).sort((a,b)=>a.start-b.start);
-    if(!daySessions.length) continue;
-    html += `<div class="agenda-day"><div class="agenda-day-title">${DAYS[d]}</div>`;
-    daySessions.forEach(s=>{
-      const occ = getOcc(selectedWeek, s.id);
-      const statusClass = occ.status==='done' ? 'status-done' : occ.status==='missed' ? 'status-missed' : '';
-      html += `<div class="agenda-card cat-${s.cat} ${statusClass}">
-        <div class="a-time">${timeStr(s.start)}–${timeStr(s.start+s.dur)}</div>
-        <div class="a-body">
-          <div class="a-cat">${CAT_LABEL[s.cat]}</div>
-          <div class="a-theme ${occ.status==='missed'?'strike':''}">${s.theme}</div>
-          ${occ.comment ? `<div class="a-comment">💬 ${occ.comment}${occ.rating?' · '+'★'.repeat(occ.rating):''}</div>` : ''}
-        </div>
-        <div class="a-actions">
-          <button class="a-act ${occ.status==='done'?'on-done':''}" onclick="toggleStatus(${s.id},'done')" title="Fait">✓</button>
-          <button class="a-act ${occ.status==='missed'?'on-missed':''}" onclick="toggleStatus(${s.id},'missed')" title="Non fait">✗</button>
-          <button class="a-act" onclick="openOccModal(${s.id})" title="Commentaire">💬</button>
-          <button class="a-act" onclick="openTemplateModal(${s.id})" title="Modifier la séance type">✏️</button>
-        </div>
-      </div>`;
-    });
-    html += `</div>`;
+/* ---------- Month calendar ---------- */
+let calMonth = new Date(); calMonth.setDate(1);
+let selectedDate = null;
+function changeMonth(delta){ calMonth.setMonth(calMonth.getMonth()+delta); selectedDate=null; renderMonth(); if(statPeriod==='month') renderStats(); }
+function jumpTodayMonth(){ calMonth = new Date(); calMonth.setDate(1); selectedDate = ymd(new Date()); renderMonth(); }
+function eventsOn(dateStr){ return events.filter(e=>e.date===dateStr).sort((a,b)=>a.start-b.start); }
+function renderMonth(){
+  document.getElementById('mnTitle').textContent = calMonth.toLocaleDateString('fr-FR',{month:'long', year:'numeric'});
+  const first = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+  const startDow = (first.getDay()+6)%7;
+  const gridStart = new Date(first); gridStart.setDate(first.getDate()-startDow);
+  const todayStr = ymd(new Date());
+  let html = DAYS.map(d=>`<div class="month-head">${d.slice(0,3)}</div>`).join('');
+  for(let i=0;i<42;i++){
+    const d = new Date(gridStart); d.setDate(gridStart.getDate()+i);
+    const dStr = ymd(d);
+    const isOther = d.getMonth() !== calMonth.getMonth();
+    const isToday = dStr === todayStr;
+    const isSel = dStr === selectedDate;
+    const evs = eventsOn(dStr);
+    const dots = evs.slice(0,4).map(e=>`<span class="day-dot" style="background:${CAT_COLOR[e.cat]}"></span>`).join('');
+    const more = evs.length>4 ? `<div class="day-more">+${evs.length-4}</div>` : '';
+    html += `<div class="day-cell ${isOther?'other-month':''} ${isToday?'is-today':''} ${isSel?'is-selected':''}" onclick="selectDay('${dStr}')">
+      <span class="day-num">${d.getDate()}</span>
+      <div class="day-dots">${dots}</div>${more}
+    </div>`;
   }
-  el.innerHTML = html || `<div class="agenda-empty">Aucune séance planifiée.</div>`;
+  document.getElementById('monthGrid').innerHTML = html;
+  if(selectedDate) renderDayPanel(); else document.getElementById('dayPanel').style.display='none';
+}
+function selectDay(dStr){ selectedDate = dStr; renderMonth(); renderDayPanel(); }
+function renderDayPanel(){
+  const panel = document.getElementById('dayPanel');
+  panel.style.display = 'block';
+  const d = parseYmd(selectedDate);
+  const evs = eventsOn(selectedDate);
+  let html = `<h4>${d.toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long'})}</h4>`;
+  html += evs.length ? evs.map(e=>eventCardHtml(e)).join('') : `<div class="agenda-empty">Aucune séance ce jour-là.</div>`;
+  html += `<button class="add-btn" style="margin-top:8px;" onclick="openEventModal(null, '${selectedDate}')">+ Ajouter une séance ce jour-là</button>`;
+  panel.innerHTML = html;
 }
 
-/* ---------- Modal: template edit/add ---------- */
-let modalMode = null, editingId = null;
-function openTemplateModal(id){
-  modalMode='template'; editingId = id || null;
-  const s = id ? sessions.find(x=>x.id===id) : null;
+/* ---------- Agenda (liste chronologique) ---------- */
+function renderAgenda(){
+  const el = document.getElementById('agendaView');
+  const sorted = [...events].sort((a,b)=> a.date===b.date ? a.start-b.start : (a.date<b.date?-1:1));
+  if(!sorted.length){ el.innerHTML = `<div class="agenda-empty">Aucune séance planifiée. Clique sur "+ Ajouter".</div>`; return; }
+  let html=''; let lastDate=null;
+  sorted.forEach(e=>{
+    if(e.date!==lastDate){
+      const d = parseYmd(e.date);
+      html += `<div class="agenda-date-title">${d.toLocaleDateString('fr-FR',{weekday:'long', day:'numeric', month:'long'})}</div>`;
+      lastDate = e.date;
+    }
+    html += eventCardHtml(e);
+  });
+  el.innerHTML = html;
+}
+
+function eventCardHtml(e){
+  const statusClass = e.status==='done' ? 'status-done' : e.status==='missed' ? 'status-missed' : '';
+  const links = (e.links||[]).map(l=>`<a class="ev-link" href="${l.url}" target="_blank" rel="noopener">🔗 ${l.label||l.url}</a>`).join('');
+  return `<div class="event-card cat-${e.cat} ${statusClass}">
+    <div class="ev-top">
+      <div class="ev-time">${timeStr(e.start)}–${timeStr(e.start+e.dur)}</div>
+      <div class="ev-body">
+        <div class="ev-cat">${CAT_LABEL[e.cat]}</div>
+        <div class="ev-theme ${e.status==='missed'?'strike':''}">${e.theme}</div>
+        ${e.notes ? `<div class="ev-notes">${e.notes}</div>` : ''}
+        ${e.comment ? `<div class="ev-comment">💬 ${e.comment}${e.rating?' · '+'★'.repeat(e.rating):''}</div>` : ''}
+        ${links ? `<div class="ev-links">${links}</div>` : ''}
+      </div>
+      <div class="ev-actions">
+        <button class="ev-act ${e.status==='done'?'on-done':''}" onclick="toggleStatus(${e.id},'done')" title="Fait">✓</button>
+        <button class="ev-act ${e.status==='missed'?'on-missed':''}" onclick="toggleStatus(${e.id},'missed')" title="Non fait">✗</button>
+        <button class="ev-act" onclick="openEventModal(${e.id})" title="Modifier">✏️</button>
+      </div>
+    </div>
+  </div>`;
+}
+function toggleStatus(id, status){
+  const e = events.find(x=>x.id===id);
+  const next = e.status===status ? null : status;
+  e.status = next;
+  logChange(`« ${e.theme} » (${e.date}) marquée ${next==='done'?'faite ✓':next==='missed'?'non faite ✗':'non renseignée'}.`);
+  renderAll();
+}
+
+function renderAll(){ renderMonth(); if(currentView==='agenda') renderAgenda(); renderStats(); renderHistory(); }
+
+/* ---------- Modal : événement (ajout/édition complète) ---------- */
+let editingId = null, modalLinks = [];
+function openEventModal(id, presetDate){
+  editingId = id || null;
+  const e = id ? events.find(x=>x.id===id) : null;
+  modalLinks = e ? JSON.parse(JSON.stringify(e.links||[])) : [];
+  const dateVal = e ? e.date : (presetDate || ymd(new Date()));
   document.getElementById('modalBox').innerHTML = `
     <h3>${id?'Modifier la séance':'Nouvelle séance'}</h3>
-    <div class="field"><label>Catégorie</label>
-      <select id="f-cat">
-        ${Object.keys(CAT_LABEL).map(c=>`<option value="${c}" ${s&&s.cat===c?'selected':''}>${CAT_LABEL[c]}</option>`).join('')}
-      </select></div>
-    <div class="field"><label>Thème / titre</label><input id="f-theme" type="text" value="${s?s.theme.replace(/"/g,'&quot;'):''}" placeholder="Ex : Fourchettes de cavalier"></div>
     <div class="row2">
-      <div class="field"><label>Jour</label><select id="f-day">${DAYS.map((d,i)=>`<option value="${i}" ${s&&s.day===i?'selected':''}>${d}</option>`).join('')}</select></div>
-      <div class="field"><label>Heure</label><input id="f-start" type="time" step="900" value="${s?timeStr(s.start):'20:00'}"></div>
+      <div class="field"><label>Date</label><input id="f-date" type="date" value="${dateVal}"></div>
+      <div class="field"><label>Heure</label><input id="f-start" type="time" step="900" value="${e?timeStr(e.start):'20:00'}"></div>
     </div>
-    <div class="field"><label>Durée (minutes)</label><input id="f-dur" type="number" min="15" max="240" step="5" value="${s?s.dur:60}"></div>
-    <div class="modal-actions">
-      <button class="btn btn-danger" style="${id?'':'visibility:hidden;'}" onclick="deleteTemplate()">Supprimer</button>
-      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveTemplate()">Enregistrer</button></div>
-    </div>`;
-  document.getElementById('overlay').classList.add('open');
-}
-function saveTemplate(){
-  const cat = document.getElementById('f-cat').value;
-  const theme = document.getElementById('f-theme').value.trim() || 'Séance libre';
-  const day = parseInt(document.getElementById('f-day').value);
-  const start = parseTime(document.getElementById('f-start').value);
-  const dur = Math.max(15, parseInt(document.getElementById('f-dur').value)||60);
-  if(editingId){
-    const s = sessions.find(x=>x.id===editingId);
-    Object.assign(s, {cat, theme, day, start, dur});
-    logChange(`Séance type modifiée : « ${theme} » (${DAYS[day]} ${timeStr(start)}, ${dur} min).`);
-  } else {
-    sessions.push({id:nextId++, cat, theme, day, start, dur});
-    logChange(`Séance ajoutée : « ${theme} » (${DAYS[day]} ${timeStr(start)}, ${dur} min).`);
-  }
-  closeModal(); saveAll(); renderGrid(); renderAgenda(); renderStats();
-}
-function deleteTemplate(){
-  const s = sessions.find(x=>x.id===editingId);
-  sessions = sessions.filter(x=>x.id!==editingId);
-  logChange(`Séance supprimée : « ${s.theme} ».`);
-  closeModal(); saveAll(); renderGrid(); renderAgenda(); renderStats();
-}
-
-/* ---------- Modal: occurrence (status/comment/rating) ---------- */
-let occSessionId = null;
-function openOccModal(id){
-  modalMode='occurrence'; occSessionId = id;
-  const s = sessions.find(x=>x.id===id);
-  const occ = getOcc(selectedWeek, id);
-  document.getElementById('modalBox').innerHTML = `
-    <h3>${s.theme}</h3>
-    <p style="font-size:12px;color:var(--cream-dim);margin:-8px 0 14px;">Semaine ${selectedWeek} · ${DAYS[s.day]} ${timeStr(s.start)}</p>
+    <div class="row2">
+      <div class="field"><label>Catégorie</label><select id="f-cat">${Object.keys(CAT_LABEL).map(c=>`<option value="${c}" ${e&&e.cat===c?'selected':''}>${CAT_LABEL[c]}</option>`).join('')}</select></div>
+      <div class="field"><label>Durée (min)</label><input id="f-dur" type="number" min="10" max="240" step="5" value="${e?e.dur:60}"></div>
+    </div>
+    <div class="field"><label>Thème / titre</label><input id="f-theme" type="text" value="${e?e.theme.replace(/"/g,'&quot;'):''}" placeholder="Ex : Fourchettes de cavalier"></div>
+    <div class="field"><label>Notes / description</label><textarea id="f-notes" placeholder="Détails, plan de la séance, ce qu'il faut réviser avant...">${e?e.notes||'':''}</textarea></div>
+    <div class="field"><label>Liens (vidéo, étude, exercices...)</label><div id="linkRows"></div><button type="button" class="add-link-btn" onclick="addLinkRow()">+ Ajouter un lien</button></div>
     <div class="field"><label>Statut</label>
       <div class="status-choice">
-        <button id="st-done" class="${occ.status==='done'?'sel-done':''}" onclick="pickStatus('done')">✓ Fait</button>
-        <button id="st-missed" class="${occ.status==='missed'?'sel-missed':''}" onclick="pickStatus('missed')">✗ Non fait</button>
+        <button id="st-done" class="${e&&e.status==='done'?'sel-done':''}" onclick="pickStatus('done')">✓ Fait</button>
+        <button id="st-missed" class="${e&&e.status==='missed'?'sel-missed':''}" onclick="pickStatus('missed')">✗ Non fait</button>
         <button id="st-none" onclick="pickStatus(null)">— Effacer</button>
       </div>
     </div>
-    <div class="field"><label>Ressenti</label><div class="stars" id="starsRow">${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${n<=occ.rating?'filled':''}" onclick="pickRating(${n})">★</span>`).join('')}</div></div>
-    <div class="field"><label>Commentaire</label><textarea id="f-comment" placeholder="Ex : galère sur les finales de tours, à refaire.">${occ.comment||''}</textarea></div>
+    <div class="field"><label>Ressenti</label><div class="stars" id="starsRow">${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${e&&n<=(e.rating||0)?'filled':''}" onclick="pickRating(${n})">★</span>`).join('')}</div></div>
+    <div class="field"><label>Commentaire</label><textarea id="f-comment" placeholder="Ex : galère sur les finales de tours, à refaire.">${e?e.comment||'':''}</textarea></div>
     <div class="modal-actions">
-      <button class="modal-link" onclick="openTemplateModal(${id})">✏️ Modifier la séance type</button>
-      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveOcc()">Enregistrer</button></div>
+      <button class="btn btn-danger" style="${id?'':'visibility:hidden;'}" onclick="deleteEvent()">Supprimer</button>
+      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveEvent()">Enregistrer</button></div>
     </div>`;
-  window._occStatus = occ.status; window._occRating = occ.rating||0;
+  window._evStatus = e ? e.status : null;
+  window._evRating = e ? (e.rating||0) : 0;
+  renderLinkRows();
   document.getElementById('overlay').classList.add('open');
 }
+function renderLinkRows(){
+  document.getElementById('linkRows').innerHTML = modalLinks.map((l,i)=>`
+    <div class="link-row">
+      <input type="text" placeholder="Libellé (ex: Vidéo)" value="${(l.label||'').replace(/"/g,'&quot;')}" onchange="modalLinks[${i}].label=this.value">
+      <input type="text" placeholder="https://..." value="${(l.url||'').replace(/"/g,'&quot;')}" onchange="modalLinks[${i}].url=this.value">
+      <button type="button" class="link-remove" onclick="removeLinkRow(${i})">✕</button>
+    </div>`).join('');
+}
+function addLinkRow(){ modalLinks.push({label:'', url:''}); renderLinkRows(); }
+function removeLinkRow(i){ modalLinks.splice(i,1); renderLinkRows(); }
 function pickStatus(st){
-  window._occStatus = st;
+  window._evStatus = st;
   document.getElementById('st-done').className = st==='done'?'sel-done':'';
   document.getElementById('st-missed').className = st==='missed'?'sel-missed':'';
 }
 function pickRating(n){
-  window._occRating = n;
-  document.querySelectorAll('#starsRow span').forEach(sp=> sp.classList.toggle('filled', parseInt(sp.dataset.n)<=n));
+  window._evRating = n;
+  document.querySelectorAll('#starsRow span').forEach(sp=>sp.classList.toggle('filled', parseInt(sp.dataset.n)<=n));
 }
-function saveOcc(){
-  const s = sessions.find(x=>x.id===occSessionId);
+function saveEvent(){
+  const date = document.getElementById('f-date').value;
+  const start = parseTime(document.getElementById('f-start').value);
+  const cat = document.getElementById('f-cat').value;
+  const dur = Math.max(10, parseInt(document.getElementById('f-dur').value)||60);
+  const theme = document.getElementById('f-theme').value.trim() || 'Séance libre';
+  const notes = document.getElementById('f-notes').value.trim();
   const comment = document.getElementById('f-comment').value.trim();
-  setOcc(selectedWeek, occSessionId, {status:window._occStatus, comment, rating:window._occRating||0, ts:Date.now()});
-  logChange(`Semaine ${selectedWeek} — commentaire sur « ${s.theme} »${comment?' : "'+comment.slice(0,60)+'"':' mis à jour'}.`);
-  closeModal(); renderAgenda(); renderStats();
+  const links = modalLinks.filter(l=>l.url && l.url.trim());
+  const payload = {date, start, dur, cat, theme, notes, links, status:window._evStatus, comment, rating:window._evRating||0};
+  if(editingId){
+    Object.assign(events.find(x=>x.id===editingId), payload);
+    logChange(`Séance modifiée : « ${theme} » (${date} ${timeStr(start)}).`);
+  } else {
+    events.push(Object.assign({id:nextId++}, payload));
+    logChange(`Séance ajoutée : « ${theme} » (${date} ${timeStr(start)}).`);
+  }
+  closeModal(); saveAll(); renderAll();
+}
+function deleteEvent(){
+  const e = events.find(x=>x.id===editingId);
+  events = events.filter(x=>x.id!==editingId);
+  logChange(`Séance supprimée : « ${e.theme} » (${e.date}).`);
+  closeModal(); saveAll(); renderAll();
 }
 
-/* ---------- Modal: settings ---------- */
+/* ---------- Modal : série récurrente ---------- */
+function openSeries(){
+  document.getElementById('modalBox').innerHTML = `
+    <h3>Générer une série récurrente</h3>
+    <p style="font-size:12px;color:var(--cream-dim);margin:-8px 0 14px;">Crée une séance chaque semaine sur un jour donné, entre deux dates. Chaque séance créée reste ensuite indépendante — tu pourras la déplacer ou la supprimer une par une sans toucher aux autres.</p>
+    <div class="row2">
+      <div class="field"><label>Catégorie</label><select id="sr-cat">${Object.keys(CAT_LABEL).map(c=>`<option value="${c}">${CAT_LABEL[c]}</option>`).join('')}</select></div>
+      <div class="field"><label>Jour de la semaine</label><select id="sr-dow">${DAYS.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Thème / titre</label><input id="sr-theme" type="text" placeholder="Ex : Puzzles tactiques"></div>
+    <div class="row2">
+      <div class="field"><label>Heure</label><input id="sr-start" type="time" step="900" value="20:00"></div>
+      <div class="field"><label>Durée (min)</label><input id="sr-dur" type="number" min="10" max="240" step="5" value="60"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Du</label><input id="sr-from" type="date" value="${ymd(new Date())}"></div>
+      <div class="field"><label>Au</label><input id="sr-to" type="date" value="${ymd(new Date(Date.now()+60*86400000))}"></div>
+    </div>
+    <div class="modal-actions">
+      <div></div>
+      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveSeries()">Générer</button></div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function saveSeries(){
+  const cat = document.getElementById('sr-cat').value;
+  const theme = document.getElementById('sr-theme').value.trim() || 'Séance libre';
+  const dow = parseInt(document.getElementById('sr-dow').value);
+  const start = parseTime(document.getElementById('sr-start').value);
+  const dur = Math.max(10, parseInt(document.getElementById('sr-dur').value)||60);
+  const from = parseYmd(document.getElementById('sr-from').value);
+  const to = parseYmd(document.getElementById('sr-to').value);
+  let count = 0;
+  const d = new Date(from);
+  while((d.getDay()+6)%7 !== dow){ d.setDate(d.getDate()+1); }
+  while(d <= to){
+    events.push({id:nextId++, date:ymd(d), start, dur, cat, theme, notes:'', links:[], status:null, comment:'', rating:0});
+    count++; d.setDate(d.getDate()+7);
+  }
+  logChange(`Série générée : « ${theme} » chaque ${DAYS[dow].toLowerCase()} du ${ymd(from)} au ${ymd(to)} (${count} séances).`);
+  closeModal(); saveAll(); renderAll();
+}
+
+/* ---------- Modal : réglages ---------- */
 function openSettings(){
-  modalMode='settings';
   document.getElementById('modalBox').innerHTML = `
     <h3>Réglages du programme</h3>
     <div class="field"><label>Objectif hebdomadaire (heures)</label><input id="s-goal" type="number" min="1" max="40" step="0.5" value="${settings.weeklyGoalMin/60}"></div>
@@ -690,10 +663,6 @@ function openSettings(){
         <input id="s-par" type="number" min="0" max="100" value="${settings.targets.parties}">
       </div>
       <p style="font-size:10.5px;color:var(--cream-dim);margin-top:5px;">Ordre : Tactique · Finales · Stratégie · Parties</p>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Durée du programme (semaines)</label><input id="s-weeks" type="number" min="1" max="52" value="${settings.totalWeeks}"></div>
-      <div class="field"><label>Date de début</label><input id="s-start" type="date" value="${startDate().toISOString().slice(0,10)}"></div>
     </div>
     <div class="modal-actions">
       <div></div>
@@ -709,60 +678,58 @@ function saveSettings(){
     strategie: parseInt(document.getElementById('s-str').value)||0,
     parties: parseInt(document.getElementById('s-par').value)||0,
   };
-  settings.totalWeeks = Math.max(1, parseInt(document.getElementById('s-weeks').value)||15);
-  const newStart = new Date(document.getElementById('s-start').value+'T00:00:00');
-  settings.startDateISO = newStart.toISOString();
-  logChange('Réglages du programme mis à jour (objectifs, durée ou date de départ).');
-  closeModal(); saveAll(); selectedWeek = currentWeekForToday(); renderAgenda(); renderStats(); renderCurriculum();
+  logChange('Réglages du programme mis à jour.');
+  closeModal(); saveAll(); renderStats();
 }
 
-function closeModal(){ document.getElementById('overlay').classList.remove('open'); modalMode=null; }
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); editingId=null; }
 document.getElementById('overlay').addEventListener('click',(e)=>{ if(e.target.id==='overlay') closeModal(); });
 
 /* ---------- History ---------- */
+function relTime(ts){ const diff=Date.now()-ts, m=Math.floor(diff/60000), h=Math.floor(m/60), d=Math.floor(h/24); if(d>0) return d+'j'; if(h>0) return h+'h'; if(m>0) return m+'min'; return "à l'instant"; }
 function renderHistory(){
   const el = document.getElementById('history');
   if(!changeLog.length){ el.innerHTML = `<div class="hist-empty">Aucune modification enregistrée pour l'instant.</div>`; return; }
   el.innerHTML = changeLog.map(h=>`<div class="hist-row"><div class="hist-time">il y a ${relTime(h.ts)}</div><div class="hist-text">${h.text}</div></div>`).join('');
 }
 
-/* ---------- Curriculum ---------- */
+/* ---------- Curriculum (repères indicatifs, indépendants du calendrier) ---------- */
 const curriculum = [
-  {phase:'Phase 1 — Fondations', weeks:[1,2,3,4], desc:'Poser les bases : motifs tactiques élémentaires, finales de pions, structures simples. Oui Neal, même toi tu dois réviser l’opposition.', rows:[
+  {phase:'Phase 1 — Fondations', weeks:[1,2,3,4], desc:'Poser les bases : motifs tactiques élémentaires, finales de pions, structures simples.', rows:[
     ['1','Fourchettes et clouages','Roi + pion vs roi : l’opposition','Pion isolé, pion doublé'],
     ['2','Enfilades et attaques à la découverte','Le carré du pion','Avant-postes et cases fortes'],
     ['3','Attaques doubles, échecs à la découverte','Roi + 2 pions vs roi','Colonnes ouvertes et semi-ouvertes'],
-    ['4','Combinaisons à motifs mixtes (révision)','Percée de pions','Bilan phase 1 : partie longue + auto-analyse'],
+    ['4','Combinaisons à motifs mixtes (révision)','Percée de pions','Bilan phase 1'],
   ]},
   {phase:'Phase 2 — Consolidation', weeks:[5], desc:'Approfondir : sacrifices classiques, finales de tours, plans stratégiques.', rows:[
     ['5','Déviation et surcharge','Finales de tours : la règle de Lucena','Échange de pièces : quand simplifier'],
   ]},
-  {phase:'Prépa tournoi — Taper', weeks:[6], desc:"Semaine du 19–25 oct : on réduit le volume, on n’apprend plus rien de neuf. Ronde 1 le samedi 24.", rows:[
-    ['6','Puzzles déjà maîtrisés uniquement','Relis ta fiche mémo de finales types (5 min/jour)','Relecture du répertoire d’ouvertures — surface, pas de profondeur'],
+  {phase:'Prépa tournoi — Taper', weeks:[6], desc:"Semaine du 19–25 oct : volume réduit. Ronde 1 le samedi 24.", rows:[
+    ['6','Puzzles déjà maîtrisés uniquement','Fiche mémo de finales types','Survol du répertoire d’ouvertures'],
   ]},
-  {phase:'Tournoi', weeks:[7], desc:"Semaine du 26 oct–1 nov : rondes du tournoi jusqu’au samedi 31. Le café est autorisé, la 4ème bière la veille d’une ronde beaucoup moins.", rows:[
-    ['7','10–15 min d’échauffement tactique avant chaque ronde','Pas de nouvelle étude — priorité au repos','Debrief à chaud (15 min max), analyse complète différée'],
+  {phase:'Tournoi', weeks:[7], desc:"Semaine du 26 oct–1 nov : rondes du tournoi jusqu’au samedi 31.", rows:[
+    ['7','Échauffement tactique avant chaque ronde','Repos entre les rondes','Debrief à chaud, analyse différée'],
   ]},
   {phase:'Récupération & bilan', weeks:[8], desc:'Semaine du 2–8 nov : on souffle, puis on exploite les parties du tournoi.', rows:[
-    ['8','Volume réduit ou pause','—','Analyse approfondie de toutes tes parties de tournoi'],
+    ['8','Volume réduit ou pause','—','Analyse approfondie des parties de tournoi'],
   ]},
-  {phase:'Phase 2 (suite) — Consolidation', weeks:[9,10,11], desc:'On reprend le fil là où on l’avait laissé avant le tournoi.', rows:[
+  {phase:'Phase 2 (suite)', weeks:[9,10,11], desc:'On reprend le fil là où on l’avait laissé avant le tournoi.', rows:[
     ['9','Interférence, mats étouffés','Position de Philidor','Jeu sur les ailes opposées'],
-    ['10','Sacrifices thématiques (Grec, Gréco)','Finales de fous de même couleur','Cases faibles et complexes de cases'],
-    ['11','Mats typiques (couloir, échelle, Boden)','Finales de fous de couleurs opposées','Bilan phase 2 : partie longue + auto-analyse'],
+    ['10','Sacrifices thématiques (Grec, Gréco)','Finales de fous de même couleur','Cases faibles'],
+    ['11','Mats typiques (couloir, échelle, Boden)','Finales de fous de couleurs opposées','Bilan phase 2'],
   ]},
   {phase:'Phase 3 — Perfectionnement', weeks:[12,13,14,15], desc:'Complexifier : calcul profond, finales mixtes, évaluation et prophylaxie.', rows:[
-    ['12','Calcul de variantes à 3–4 coups','Finales tour + fou vs tour + cavalier','Prophylaxie : anticiper le plan adverse'],
+    ['12','Calcul de variantes à 3–4 coups','Finales tour + fou vs tour + cavalier','Prophylaxie'],
     ['13','Puzzles en position complexe','Finales de dames : échecs perpétuels','Transition milieu de jeu → finale'],
     ['14','Zwischenzug et coups intermédiaires','Zugzwang et triangulation','Évaluation de position'],
-    ['15','Tactique sous pression (blitz puzzles)','Finales pratiques mixtes (révision)','Bilan général + analyse complète'],
+    ['15','Tactique sous pression (blitz puzzles)','Finales pratiques mixtes','Bilan général'],
   ]},
 ];
 function renderCurriculum(){
   const s0 = startDate();
-  document.getElementById('dateRange').textContent = `Programme du ${s0.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} au ` +
+  document.getElementById('dateRange').textContent = `Repères indicatifs du ${s0.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} au ` +
     (()=>{const e=new Date(s0); e.setDate(e.getDate()+settings.totalWeeks*7-1); return e.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});})() +
-    `. Ton tournoi se termine le 31 octobre, jour d'Halloween ; le lendemain c'est la Toussaint, jour férié. Même le calendrier a prévu ton repos, Neal.`;
+    `. Ces thèmes sont des suggestions — organise les vraies séances comme tu veux dans le calendrier ci-dessus.`;
   document.getElementById('curriculum').innerHTML = curriculum.map(ph=>{
     const rows = ph.rows.map((r,i)=>{
       const wkNum = ph.weeks[i]; const wkStart = new Date(s0); wkStart.setDate(wkStart.getDate()+(wkNum-1)*7);
@@ -774,19 +741,15 @@ function renderCurriculum(){
   }).join('');
 }
 
+/* ---------- Init ---------- */
 (async function init(){
-  renderHeads(); renderHourLabels();
   await loadAll();
-  if(!settings.startDateISO){
-    settings.startDateISO = nextMonday().toISOString();
-    await saveAll();
-  }
-  renderGrid(); renderStats(); renderCurriculum(); renderHistory();
-  selectedWeek = currentWeekForToday();
-  setView(currentView); renderAgenda();
+  if(!settings.startDateISO){ settings.startDateISO = nextMonday().toISOString(); await saveAll(); }
+  renderPeriodSel();
+  renderMonth(); renderStats(); renderCurriculum(); renderHistory();
+  setView(currentView);
   if(supa) setInterval(pollRemote, 15000);
 })();
-
 </script>
 </body>
 </html>
