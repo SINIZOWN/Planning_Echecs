@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Plan d'entraînement — Neal Toussaint</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -216,6 +217,7 @@
     </div>
 
     <div class="legend" id="legend"></div>
+    <div id="syncBadge" style="font-size:11px;color:var(--cream-dim);margin:-6px 0 14px;">○ Local uniquement</div>
 
     <div class="cal" id="calView">
       <div class="cal-corner"></div>
@@ -286,6 +288,19 @@ const CAT_COLOR = {tactique:'#c1502e', finales:'#3d7ab5', strategie:'#4f8f5c', p
 const SERIOUS_CATS = ['tactique','finales','strategie','parties'];
 const STORAGE_KEY = 'chess-plan-neal-v2';
 
+/* ---------- Supabase (base cloud partagée) ----------
+   1) Crée un projet gratuit sur supabase.com
+   2) Colle ton URL de projet et ta clé "anon public" ci-dessous
+   3) Sans ça, le site continue de marcher en local uniquement (pas de synchro) */
+const SUPABASE_URL = "COLLE_ICI_TON_URL_SUPABASE";
+const SUPABASE_ANON_KEY = "COLLE_ICI_TA_CLE_ANON_PUBLIC";
+const PLAN_ID = 'neal';
+let supa = null;
+if(SUPABASE_URL.startsWith('https://') && SUPABASE_ANON_KEY.length > 10 && window.supabase){
+  supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+let lastUpdatedAt = null;
+
 let sessions = [
   {id:1, day:0, start:20*60, dur:90,  cat:'tactique', theme:'Motifs de base : fourchette & clouage'},
   {id:2, day:1, start:20*60, dur:105, cat:'finales',  theme:"Roi et pion contre roi : l’opposition"},
@@ -301,33 +316,78 @@ let changeLog = [];
 let settings = { weeklyGoalMin:420, targets:{tactique:33,finales:25,strategie:25,parties:17}, totalWeeks:15, startDateISO:null };
 
 /* ---------- Persistence ---------- */
-function saveAll(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({sessions, occurrences, changeLog, settings, nextId}));
-  }catch(e){}
+function setSyncBadge(state){
+  const el = document.getElementById('syncBadge');
+  if(!el) return;
+  const map = {
+    off: ['○ Local uniquement', 'var(--cream-dim)'],
+    ok:  ['☁ Synchronisé', 'var(--gold)'],
+    sync:['☁ Mis à jour depuis un autre appareil', 'var(--gold)'],
+    err: ['⚠ Erreur de synchro', '#e08066'],
+  };
+  const [txt, col] = map[state] || map.off;
+  el.textContent = txt; el.style.color = col;
 }
-function loadAll(){
+function applyData(d){
+  if(d.sessions && d.sessions.length) sessions = d.sessions;
+  if(d.occurrences) occurrences = d.occurrences;
+  if(d.changeLog) changeLog = d.changeLog;
+  if(d.settings) settings = Object.assign(settings, d.settings);
+  if(d.nextId) nextId = d.nextId;
+}
+function saveLocal(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({sessions, occurrences, changeLog, settings, nextId})); }catch(e){}
+}
+function loadLocal(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
-      const p = JSON.parse(raw);
-      if(p.sessions && p.sessions.length) sessions = p.sessions;
-      if(p.occurrences) occurrences = p.occurrences;
-      if(p.changeLog) changeLog = p.changeLog;
-      if(p.settings) settings = Object.assign(settings, p.settings);
-      if(p.nextId) nextId = p.nextId;
+    if(raw) applyData(JSON.parse(raw));
+  }catch(e){}
+}
+async function saveAll(){
+  saveLocal();
+  if(!supa) { setSyncBadge('off'); return; }
+  try{
+    const nowIso = new Date().toISOString();
+    const payload = {sessions, occurrences, changeLog, settings, nextId};
+    const {error} = await supa.from('plans').upsert({id: PLAN_ID, data: payload, updated_at: nowIso});
+    if(error){ setSyncBadge('err'); console.error(error); }
+    else { lastUpdatedAt = nowIso; setSyncBadge('ok'); }
+  }catch(e){ setSyncBadge('err'); }
+}
+async function loadAll(){
+  loadLocal(); // affichage immédiat depuis le cache local pendant que le réseau répond
+  if(!supa){ setSyncBadge('off'); return; }
+  try{
+    const {data, error} = await supa.from('plans').select('data, updated_at').eq('id', PLAN_ID).maybeSingle();
+    if(!error && data){
+      applyData(data.data);
+      lastUpdatedAt = data.updated_at;
+      saveLocal();
+      setSyncBadge('ok');
+    } else if(!error && !data){
+      await saveAll(); // rien en ligne : on pousse l'état de départ
+    } else { setSyncBadge('err'); }
+  }catch(e){ setSyncBadge('err'); }
+}
+async function pollRemote(){
+  if(!supa) return;
+  if(document.getElementById('overlay').classList.contains('open')) return; // pas d'écrasement pendant une saisie
+  try{
+    const {data, error} = await supa.from('plans').select('data, updated_at').eq('id', PLAN_ID).maybeSingle();
+    if(!error && data && data.updated_at !== lastUpdatedAt){
+      applyData(data.data);
+      lastUpdatedAt = data.updated_at;
+      saveLocal();
+      renderGrid(); renderAgenda(); renderStats(); renderCurriculum(); renderHistory();
+      setSyncBadge('sync');
     }
   }catch(e){}
 }
-loadAll();
 
 function nextMonday(){
   const d = new Date(); const day = d.getDay(); const diff = (8-day)%7 || 7;
   d.setDate(d.getDate()+diff); d.setHours(0,0,0,0); return d;
-}
-if(!settings.startDateISO){
-  settings.startDateISO = nextMonday().toISOString();
-  saveAll();
 }
 
 function logChange(text){
@@ -336,9 +396,10 @@ function logChange(text){
   saveAll();
   renderHistory();
 }
-function resetAll(){
-  if(!confirm("Tout effacer (planning, historique, commentaires) et repartir de zéro ?")) return;
+async function resetAll(){
+  if(!confirm("Tout effacer (planning, historique, commentaires) sur tous les appareils et repartir de zéro ?")) return;
   try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  if(supa){ try{ await supa.from('plans').delete().eq('id', PLAN_ID); }catch(e){} }
   location.reload();
 }
 function clearHistory(){
@@ -347,6 +408,7 @@ function clearHistory(){
   saveAll();
   renderHistory();
 }
+
 
 /* ---------- Helpers ---------- */
 function timeStr(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
@@ -364,7 +426,7 @@ function currentWeekForToday(){
   const diff = Math.floor((new Date()-startDate())/(7*86400000))+1;
   return Math.min(settings.totalWeeks, Math.max(1, diff));
 }
-let selectedWeek = currentWeekForToday();
+let selectedWeek = 1; // recalculé une fois les réglages chargés, dans init()
 
 /* ---------- Grid (template) ---------- */
 function renderHeads(){
@@ -712,8 +774,19 @@ function renderCurriculum(){
   }).join('');
 }
 
-renderHeads(); renderHourLabels(); renderGrid(); renderStats(); renderCurriculum(); renderHistory();
-setView(currentView); renderAgenda();
+(async function init(){
+  renderHeads(); renderHourLabels();
+  await loadAll();
+  if(!settings.startDateISO){
+    settings.startDateISO = nextMonday().toISOString();
+    await saveAll();
+  }
+  renderGrid(); renderStats(); renderCurriculum(); renderHistory();
+  selectedWeek = currentWeekForToday();
+  setView(currentView); renderAgenda();
+  if(supa) setInterval(pollRemote, 15000);
+})();
+
 </script>
 </body>
 </html>
