@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan d'entraînement — Neal Toussaint</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --wood-dark:#241a12; --wood:#2f2216; --wood-light:#3c2c1c;
+    --cream:#f1e9d8; --cream-dim:#cbbfa4; --gold:#c79a4b; --line:#4a3826;
+    --c-tactique:#c1502e; --c-tactique-soft:#3a231b;
+    --c-finales:#3d7ab5; --c-finales-soft:#1e2c39;
+    --c-strategie:#4f8f5c; --c-strategie-soft:#1f2f21;
+    --c-parties:#9370b0; --c-parties-soft:#2c2534;
+    --c-bonus:#d9668c; --c-bonus-soft:#3a2530;
+    --ok:#5da96f; --bad:#c1543b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--wood-dark);
+    background-image:radial-gradient(ellipse at top left, rgba(199,154,75,0.06), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(199,154,75,0.05), transparent 55%);
+    color:var(--cream); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 28px 90px;}
+
+  nav.site{display:flex;gap:6px;margin-bottom:30px;flex-wrap:wrap;}
+  nav.site a{
+    color:var(--cream-dim);text-decoration:none;font-size:12.5px;padding:6px 12px;
+    border:1px solid var(--line);border-radius:6px;
+  }
+  nav.site a.active{background:var(--gold);color:#241a12;border-color:var(--gold);font-weight:600;}
+
+  header.top{margin-bottom:32px;}
+  .kicker{font-size:13px;letter-spacing:.04em;color:var(--gold);font-weight:500;margin-bottom:10px;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,4vw,42px);line-height:1.05;margin:0 0 14px;}
+  h1 em{font-style:italic;color:var(--gold);font-weight:500;}
+  .lede{max-width:640px;color:var(--cream-dim);font-size:15px;line-height:1.6;}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:30px 0 36px;}
+  .stat{background:var(--wood);padding:16px 18px;}
+  .stat .dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:7px;}
+  .stat .label{font-size:12px;color:var(--cream-dim);display:flex;align-items:center;margin-bottom:8px;}
+  .stat .val{font-family:'Fraunces',serif;font-size:24px;font-weight:600;}
+  .stat .target{font-size:11px;color:var(--cream-dim);margin-top:3px;}
+  .stat .bar{height:4px;background:var(--wood-light);border-radius:2px;margin-top:9px;position:relative;}
+  .stat .bar-fill{height:100%;border-radius:2px;transition:width .3s ease;}
+  .stat .bar-target{position:absolute;top:-2px;width:2px;height:8px;background:var(--cream);opacity:.55;}
+
+  .panel{background:var(--wood);border:1px solid var(--line);border-radius:12px;padding:22px 22px 26px;margin-bottom:36px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px;gap:16px;flex-wrap:wrap;}
+  .panel-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:0 0 4px;}
+  .panel-head p{margin:0;color:var(--cream-dim);font-size:13px;}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .icon-btn{background:transparent;color:var(--cream-dim);border:1px solid var(--line);border-radius:7px;padding:8px 11px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+  .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+  .add-btn{background:var(--gold);color:#241a12;border:none;border-radius:7px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--cream-dim);}
+  .legend-sw{width:10px;height:10px;border-radius:3px;}
+
+  .view-toggle{display:flex;background:var(--wood-light);border:1px solid var(--line);border-radius:7px;padding:2px;}
+  .vt-btn{background:transparent;border:none;color:var(--cream-dim);font-size:12px;font-weight:600;padding:6px 11px;border-radius:5px;cursor:pointer;}
+  .vt-btn.active{background:var(--gold);color:#241a12;}
+
+  .cal{display:grid;grid-template-columns:52px repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;user-select:none;}
+  .cal-day-head{background:var(--wood-light);border-bottom:1px solid var(--line);border-left:1px solid var(--line);padding:8px 4px;text-align:center;font-size:11.5px;font-weight:600;}
+  .cal-day-head .d{display:block;font-size:10px;font-weight:400;color:var(--cream-dim);}
+  .cal-corner{background:var(--wood-light);border-bottom:1px solid var(--line);}
+  .cal-hours{border-right:1px solid var(--line);}
+  .cal-hour-label{height:32px;font-size:10px;color:var(--cream-dim);text-align:right;padding-right:6px;position:relative;top:-6px;}
+  .cal-body-wrap{position:relative;grid-column:2/9;}
+  .cal-grid-bg{position:relative;display:grid;grid-template-columns:repeat(7,1fr);background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--line) 31px, var(--line) 32px);}
+  .cal-col{border-left:1px solid var(--line);position:relative;}
+  .cal-col.weekend{background:rgba(199,154,75,0.035);}
+  .session-block{position:absolute;left:2px;right:2px;border-radius:6px;padding:5px 7px;font-size:10.5px;line-height:1.3;cursor:grab;border:1px solid rgba(255,255,255,0.12);box-shadow:0 2px 6px rgba(0,0,0,0.35);z-index:3;overflow:hidden;}
+  .session-block:active{cursor:grabbing;z-index:20;}
+  .session-block.dragging{opacity:.85;box-shadow:0 8px 18px rgba(0,0,0,0.5);}
+  .t-time{font-weight:700;font-size:10px;opacity:.9;}
+  .t-cat{font-size:9px;text-transform:uppercase;letter-spacing:.03em;opacity:.75;margin-top:1px;}
+  .t-theme{margin-top:2px;font-size:10px;opacity:.92;}
+
+  .cat-tactique{background:var(--c-tactique-soft);border-left:3px solid var(--c-tactique);}
+  .cat-finales{background:var(--c-finales-soft);border-left:3px solid var(--c-finales);}
+  .cat-strategie{background:var(--c-strategie-soft);border-left:3px solid var(--c-strategie);}
+  .cat-parties{background:var(--c-parties-soft);border-left:3px solid var(--c-parties);}
+  .cat-bonus{background:var(--c-bonus-soft);border-left:3px dashed var(--c-bonus);}
+
+  .hint{font-size:12px;color:var(--cream-dim);margin-top:12px;}
+
+  /* Week nav */
+  .weeknav{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--wood-light);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
+  .weeknav .wn-mid{text-align:center;flex:1;min-width:160px;}
+  .weeknav .wn-week{font-family:'Fraunces',serif;font-size:15px;font-weight:600;}
+  .weeknav .wn-range{font-size:11.5px;color:var(--cream-dim);}
+  .weeknav .wn-progress{font-size:11px;color:var(--gold);margin-top:2px;}
+  .wn-btn{background:transparent;border:1px solid var(--line);color:var(--cream);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:14px;}
+  .wn-today{background:transparent;border:1px solid var(--line);color:var(--cream-dim);border-radius:6px;padding:6px 10px;font-size:11.5px;cursor:pointer;}
+
+  /* Agenda */
+  .agenda{display:none;}
+  .agenda-day{margin-bottom:16px;}
+  .agenda-day-title{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--gold);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--line);}
+  .agenda-card{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);margin-bottom:7px;}
+  .agenda-card.status-done{outline:1px solid var(--ok);}
+  .agenda-card.status-missed{outline:1px solid var(--bad);opacity:.75;}
+  .agenda-card .a-time{font-weight:700;font-size:12.5px;white-space:nowrap;min-width:88px;}
+  .agenda-card .a-body{flex:1;min-width:0;}
+  .agenda-card .a-cat{font-size:10px;text-transform:uppercase;letter-spacing:.03em;opacity:.75;margin-bottom:1px;}
+  .agenda-card .a-theme{font-size:12.5px;line-height:1.35;}
+  .agenda-card .a-theme.strike{text-decoration:line-through;opacity:.7;}
+  .agenda-card .a-comment{font-size:11px;color:var(--gold);margin-top:3px;font-style:italic;}
+  .a-actions{display:flex;gap:5px;flex-shrink:0;}
+  .a-act{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--cream-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .a-act.on-done{background:var(--ok);border-color:var(--ok);color:#12261a;}
+  .a-act.on-missed{background:var(--bad);border-color:var(--bad);color:#2b120c;}
+  .a-act:hover{border-color:var(--gold);}
+  .agenda-empty{font-size:13px;color:var(--cream-dim);padding:14px 0;text-align:center;}
+
+  /* Curriculum */
+  .phase{margin-bottom:28px;}
+  .phase-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;}
+  .phase-head h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0;}
+  .phase-head span{font-size:12px;color:var(--cream-dim);}
+  table.curr{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.curr th{text-align:left;font-weight:600;font-size:10.5px;color:var(--cream-dim);padding:7px 9px;border-bottom:1px solid var(--line);}
+  table.curr td{padding:9px 9px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4;}
+  table.curr tr:last-child td{border-bottom:none;}
+  table.curr td.wk{white-space:nowrap;color:var(--cream-dim);font-size:11.5px;}
+  table.curr td.tag{width:3px;padding:0;}
+  .tag-tactique{background:var(--c-tactique);} .tag-finales{background:var(--c-finales);} .tag-strategie{background:var(--c-strategie);}
+
+  /* Tips */
+  .tips{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .tip{background:var(--wood-light);border:1px solid var(--line);border-radius:9px;padding:15px 16px;}
+  .tip h4{font-family:'Fraunces',serif;font-size:14px;margin:0 0 5px;color:var(--gold);font-weight:600;}
+  .tip p{margin:0;font-size:12px;color:var(--cream-dim);line-height:1.5;}
+
+  /* History */
+  .history{max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;}
+  .hist-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12px;}
+  .hist-row:last-child{border-bottom:none;}
+  .hist-time{color:var(--cream-dim);white-space:nowrap;font-size:11px;min-width:90px;}
+  .hist-text{color:var(--cream);}
+  .hist-empty{padding:16px;text-align:center;color:var(--cream-dim);font-size:12.5px;}
+
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(10,7,4,0.65);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .overlay.open{display:flex;}
+  .modal{background:var(--wood-light);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:400px;max-height:85vh;overflow-y:auto;}
+  .modal h3{font-family:'Fraunces',serif;margin:0 0 16px;font-size:18px;font-weight:600;}
+  .field{margin-bottom:13px;}
+  .field label{display:block;font-size:11.5px;color:var(--cream-dim);margin-bottom:5px;}
+  .field select,.field input,.field textarea{width:100%;background:var(--wood);border:1px solid var(--line);color:var(--cream);padding:8px 10px;border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;}
+  .field textarea{resize:vertical;min-height:60px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .row4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .modal-actions{display:flex;justify-content:space-between;margin-top:18px;gap:10px;}
+  .btn{border:none;border-radius:7px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+  .btn-primary{background:var(--gold);color:#241a12;}
+  .btn-ghost{background:transparent;color:var(--cream-dim);border:1px solid var(--line);}
+  .btn-danger{background:transparent;color:#e08066;border:1px solid #5c3428;}
+  .status-choice{display:flex;gap:8px;}
+  .status-choice button{flex:1;padding:9px;border-radius:7px;border:1px solid var(--line);background:var(--wood);color:var(--cream-dim);font-size:12.5px;cursor:pointer;}
+  .status-choice button.sel-done{background:var(--ok);color:#12261a;border-color:var(--ok);}
+  .status-choice button.sel-missed{background:var(--bad);color:#2b120c;border-color:var(--bad);}
+  .stars{display:flex;gap:4px;font-size:20px;}
+  .stars span{cursor:pointer;opacity:.3;}
+  .stars span.filled{opacity:1;}
+  .modal-link{background:none;border:none;color:var(--gold);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+
+  @media (max-width:820px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .tips{grid-template-columns:1fr;}
+    .row4{grid-template-columns:repeat(2,1fr);}
+    .wrap{padding:28px 16px 70px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="site">
+    <a href="index.html">Accueil</a>
+    <a href="neal.html" class="active">Neal</a>
+    <a href="kevin.html">Kevin</a>
+  </nav>
+
+  <header class="top">
+    <div class="kicker">Programme personnel — dossier confidentiel</div>
+    <h1>Le plan d'entraînement de <em>Neal Toussaint</em></h1>
+    <p class="lede">7h sérieuses par semaine réparties entre tactique, finales, stratégie et parties commentées — plus quelques séances bonus qui ne comptent pour rien, sauf le moral. Coche tes séances faites, ajoute un commentaire, et retrouve tout l'historique de tes modifications ci-dessous.</p>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Semaine type</h2>
+        <p>Le planning récurrent — glisse un bloc pour changer jour/heure, clique dessus pour tout modifier.</p>
+      </div>
+      <div class="btns">
+        <div class="view-toggle" id="viewToggle">
+          <button class="vt-btn" data-view="agenda" onclick="setView('agenda')">Agenda</button>
+          <button class="vt-btn" data-view="cal" onclick="setView('cal')">Calendrier</button>
+        </div>
+        <button class="icon-btn" onclick="openSettings()">⚙ Réglages</button>
+        <button class="add-btn" onclick="openTemplateModal()">+ Ajouter</button>
+        <button class="icon-btn" onclick="resetAll()" title="Réinitialiser">↺</button>
+      </div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="cal" id="calView">
+      <div class="cal-corner"></div>
+      <div id="dayHeads" style="display:contents;"></div>
+      <div class="cal-hours" id="hourLabels"></div>
+      <div class="cal-body-wrap"><div class="cal-grid-bg" id="calGrid"></div></div>
+    </div>
+    <p class="hint" id="calHint">Grille de 08:00 à 23:00. Cette vue édite le planning type (récurrent) — pour cocher une séance faite semaine par semaine, utilise la vue Agenda.</p>
+
+    <div id="weekNav" class="weeknav" style="display:none;">
+      <button class="wn-btn" onclick="changeWeek(-1)">‹</button>
+      <div class="wn-mid">
+        <div class="wn-week" id="wnWeek"></div>
+        <div class="wn-range" id="wnRange"></div>
+        <div class="wn-progress" id="wnProgress"></div>
+      </div>
+      <button class="wn-btn" onclick="changeWeek(1)">›</button>
+      <button class="wn-today" onclick="jumpToday()">Aujourd'hui</button>
+    </div>
+    <div id="agenda" class="agenda"></div>
+    <p class="hint" id="agendaHint">✓ = fait · ✗ = non fait · 💬 = commentaire &amp; ressenti. Oui, même la bière peut être cochée.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div><h2>Feuille de route — 15 semaines</h2><p id="dateRange"></p></div>
+    </div>
+    <div id="curriculum"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div><h2>Pour que Neal progresse plus vite</h2><p>Quelques principes à appliquer en plus du planning (la bière du vendredi n'en fait pas partie, mais on l'a casée quand même).</p></div>
+    </div>
+    <div class="tips">
+      <div class="tip"><h4>Répétition espacée</h4><p>Note les puzzles tactiques ratés et retente-les 3–4 jours plus tard. C'est ce qui fixe les motifs en mémoire.</p></div>
+      <div class="tip"><h4>Analyse tes propres parties</h4><p>Repère seul les 2–3 moments critiques avant de lancer le moteur. C'est cet effort qui crée le vrai progrès.</p></div>
+      <div class="tip"><h4>Un thème à la fois</h4><p>Ne mélange pas trop de sujets dans une même séance. 60–90 min sur un seul motif ancre mieux l'apprentissage.</p></div>
+      <div class="tip"><h4>Cadence longue le samedi</h4><p>Réserve ta séance du samedi à des parties en cadence lente (15+10 min.) suivies d'une auto-analyse.</p></div>
+      <div class="tip"><h4>Mesure ta progression</h4><p>Suis ton rating tactique et ton taux de réussite par thème. Sous 70% après deux semaines : prolonge le thème.</p></div>
+      <div class="tip"><h4>Finales avant ouvertures</h4><p>À ce volume horaire, finales et tactique rapportent bien plus que l'étude d'ouvertures. Garde un répertoire minimal.</p></div>
+      <div class="tip"><h4>La bière n'est pas une variante d'ouverture</h4><p>Le vendredi soir bonus est là pour souffler, pas pour tester un gambit à l'aveugle après trois pintes. Neal, on te voit.</p></div>
+      <div class="tip"><h4>Toussaint, saint patron du repos</h4><p>Ton tournoi se termine le 31 octobre. Le 1er novembre est férié. Profites-en pour ne strictement rien analyser.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div><h2>Historique des modifications</h2><p>Chaque changement de planning, chaque séance cochée ou commentée est archivé ici, horodaté.</p></div>
+      <button class="icon-btn" onclick="clearHistory()">Vider l'historique</button>
+    </div>
+    <div class="history" id="history"></div>
+  </div>
+
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+const DAYS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const DAY_SHORT = ['LUN','MAR','MER','JEU','VEN','SAM','DIM'];
+const GRID_START = 8, GRID_END = 23, CELL_H = 32;
+const TOTAL_H = GRID_END - GRID_START;
+const CAT_LABEL = {tactique:'Tactique', finales:'Finales', strategie:'Stratégie', parties:'Parties', bonus:'Bonus fun'};
+const CAT_COLOR = {tactique:'#c1502e', finales:'#3d7ab5', strategie:'#4f8f5c', parties:'#9370b0', bonus:'#d9668c'};
+const SERIOUS_CATS = ['tactique','finales','strategie','parties'];
+const STORAGE_KEY = 'chess-plan-neal-v2';
+
+let sessions = [
+  {id:1, day:0, start:20*60, dur:90,  cat:'tactique', theme:'Motifs de base : fourchette & clouage'},
+  {id:2, day:1, start:20*60, dur:105, cat:'finales',  theme:"Roi et pion contre roi : l’opposition"},
+  {id:3, day:2, start:20*60, dur:105, cat:'strategie',theme:'Structures de pions : isolé, doublé, arriéré'},
+  {id:4, day:3, start:20*60, dur:50,  cat:'tactique', theme:'Enfilade & attaque à la découverte'},
+  {id:5, day:5, start:10*60, dur:70,  cat:'parties',  theme:'Partie longue cadence + auto-analyse'},
+  {id:6, day:4, start:20*60, dur:60,  cat:'bonus',    theme:"Bière tactique entre potes — un demi, un puzzle, zéro arbitre pour vérifier ton rating"},
+  {id:7, day:6, start:9*60,  dur:30,  cat:'bonus',    theme:"Yoga du Cavalier — étirer les hanches comme le cavalier saute les cases"},
+];
+let nextId = 8;
+let occurrences = {};   // key "week_sessionId" -> {status, comment, rating, ts}
+let changeLog = [];
+let settings = { weeklyGoalMin:420, targets:{tactique:33,finales:25,strategie:25,parties:17}, totalWeeks:15, startDateISO:null };
+
+/* ---------- Persistence ---------- */
+function saveAll(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({sessions, occurrences, changeLog, settings, nextId}));
+  }catch(e){}
+}
+function loadAll(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const p = JSON.parse(raw);
+      if(p.sessions && p.sessions.length) sessions = p.sessions;
+      if(p.occurrences) occurrences = p.occurrences;
+      if(p.changeLog) changeLog = p.changeLog;
+      if(p.settings) settings = Object.assign(settings, p.settings);
+      if(p.nextId) nextId = p.nextId;
+    }
+  }catch(e){}
+}
+loadAll();
+
+function nextMonday(){
+  const d = new Date(); const day = d.getDay(); const diff = (8-day)%7 || 7;
+  d.setDate(d.getDate()+diff); d.setHours(0,0,0,0); return d;
+}
+if(!settings.startDateISO){
+  settings.startDateISO = nextMonday().toISOString();
+  saveAll();
+}
+
+function logChange(text){
+  changeLog.unshift({ts:Date.now(), text});
+  if(changeLog.length>200) changeLog.pop();
+  saveAll();
+  renderHistory();
+}
+function resetAll(){
+  if(!confirm("Tout effacer (planning, historique, commentaires) et repartir de zéro ?")) return;
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  location.reload();
+}
+function clearHistory(){
+  if(!confirm("Vider uniquement l'historique des modifications ?")) return;
+  changeLog = [];
+  saveAll();
+  renderHistory();
+}
+
+/* ---------- Helpers ---------- */
+function timeStr(min){ const h=Math.floor(min/60), m=min%60; return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+function parseTime(str){ const [h,m]=str.split(':').map(Number); return h*60+m; }
+function fmtRange(start){ const end=new Date(start); end.setDate(end.getDate()+6); return `${start.toLocaleDateString('fr-FR',{day:'numeric'})}–${end.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`; }
+function relTime(ts){
+  const diff = Date.now()-ts, m=Math.floor(diff/60000), h=Math.floor(m/60), d=Math.floor(h/24);
+  if(d>0) return d+'j';
+  if(h>0) return h+'h';
+  if(m>0) return m+'min';
+  return 'à l\u2019instant';
+}
+function startDate(){ return new Date(settings.startDateISO); }
+function currentWeekForToday(){
+  const diff = Math.floor((new Date()-startDate())/(7*86400000))+1;
+  return Math.min(settings.totalWeeks, Math.max(1, diff));
+}
+let selectedWeek = currentWeekForToday();
+
+/* ---------- Grid (template) ---------- */
+function renderHeads(){
+  document.getElementById('dayHeads').innerHTML = DAY_SHORT.map((d,i)=>`<div class="cal-day-head">${d}<span class="d">${DAYS[i].slice(0,3)}</span></div>`).join('');
+}
+function renderHourLabels(){
+  const el = document.getElementById('hourLabels');
+  let html=''; for(let h=GRID_START; h<GRID_END; h++) html += `<div class="cal-hour-label">${String(h).padStart(2,'0')}:00</div>`;
+  el.innerHTML = html; el.style.height = (TOTAL_H*CELL_H)+'px';
+}
+function renderGrid(){
+  const grid = document.getElementById('calGrid');
+  grid.style.height = (TOTAL_H*CELL_H)+'px';
+  let cols=''; for(let d=0; d<7; d++) cols += `<div class="cal-col${d>=5?' weekend':''}" data-day="${d}" style="height:${TOTAL_H*CELL_H}px;"></div>`;
+  grid.innerHTML = cols;
+  sessions.forEach(s=>{
+    const col = grid.querySelector(`.cal-col[data-day="${s.day}"]`);
+    const block = document.createElement('div');
+    block.className = `session-block cat-${s.cat}`;
+    block.dataset.id = s.id;
+    block.style.top = (((s.start/60)-GRID_START)*CELL_H)+'px';
+    block.style.height = Math.max((s.dur/60)*CELL_H,26)+'px';
+    block.innerHTML = `<div class="t-time">${timeStr(s.start)}–${timeStr(s.start+s.dur)}</div><div class="t-cat">${CAT_LABEL[s.cat]}</div><div class="t-theme">${s.theme}</div>`;
+    attachDrag(block, s.id);
+    col.appendChild(block);
+  });
+}
+let dragState = null;
+function attachDrag(block, id){
+  block.addEventListener('mousedown', (e)=>{
+    e.preventDefault();
+    const gridBody = document.getElementById('calGrid');
+    const gridRect = gridBody.getBoundingClientRect();
+    const s = sessions.find(x=>x.id===id);
+    dragState = {id, moved:false, startX:e.clientX, startY:e.clientY, origDay:s.day, origStart:s.start, colWidth:gridRect.width/7};
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+  });
+}
+function onDragMove(e){
+  if(!dragState) return;
+  const dx=e.clientX-dragState.startX, dy=e.clientY-dragState.startY;
+  if(Math.abs(dx)>4||Math.abs(dy)>4) dragState.moved=true;
+  if(!dragState.moved) return;
+  const block = document.querySelector(`.session-block[data-id="${dragState.id}"]`);
+  block.classList.add('dragging');
+  let newDay = Math.min(6, Math.max(0, dragState.origDay + Math.round(dx/dragState.colWidth)));
+  let minDelta = Math.round((dy/CELL_H)*60/15)*15;
+  let newStart = dragState.origStart + minDelta;
+  const s = sessions.find(x=>x.id===dragState.id);
+  newStart = Math.max(GRID_START*60, Math.min((GRID_END*60)-s.dur, newStart));
+  dragState.previewDay = newDay; dragState.previewStart = newStart;
+  const col = document.querySelector(`.cal-col[data-day="${newDay}"]`);
+  block.remove(); block.style.top = (((newStart/60)-GRID_START)*CELL_H)+'px';
+  col.appendChild(block);
+}
+function onDragEnd(){
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  if(!dragState) return;
+  const s = sessions.find(x=>x.id===dragState.id);
+  if(dragState.moved){
+    const before = `${DAYS[s.day]} ${timeStr(s.start)}`;
+    s.day = dragState.previewDay; s.start = dragState.previewStart;
+    logChange(`« ${s.theme} » déplacée de ${before} à ${DAYS[s.day]} ${timeStr(s.start)}.`);
+    renderGrid(); renderAgenda(); renderStats();
+  } else {
+    openTemplateModal(dragState.id);
+  }
+  dragState = null;
+}
+
+/* ---------- Stats ---------- */
+function renderStats(){
+  const totals = {tactique:0,finales:0,strategie:0,parties:0}; let bonusTotal=0;
+  sessions.forEach(s=>{ if(s.cat==='bonus') bonusTotal+=s.dur; else totals[s.cat]+=s.dur; });
+  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+  document.getElementById('stats').innerHTML = SERIOUS_CATS.map(cat=>{
+    const pct = grandTotal ? Math.round((totals[cat]/grandTotal)*100) : 0;
+    const h=Math.floor(totals[cat]/60), m=totals[cat]%60;
+    return `<div class="stat"><div class="label"><span class="dot" style="background:${CAT_COLOR[cat]}"></span>${CAT_LABEL[cat]}</div>
+      <div class="val">${pct}%</div><div class="target">${h}h${m?String(m).padStart(2,'0'):''} · cible ${settings.targets[cat]}%</div>
+      <div class="bar"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${CAT_COLOR[cat]}"></div><div class="bar-target" style="left:${settings.targets[cat]}%;"></div></div></div>`;
+  }).join('') + `<div class="stat" style="grid-column:1/-1;background:var(--wood-light);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div class="label" style="margin:0;">Total hebdomadaire sérieux</div>
+      <div class="val" style="font-size:19px;">${Math.floor(grandTotal/60)}h${grandTotal%60?String(grandTotal%60).padStart(2,'0'):''} <span style="font-size:12px;color:var(--cream-dim);font-weight:400;">/ ${(settings.weeklyGoalMin/60)}h visées</span></div>
+      ${bonusTotal?`<div style="font-size:11.5px;color:var(--c-bonus);width:100%;">+ ${Math.floor(bonusTotal/60)}h${bonusTotal%60?String(bonusTotal%60).padStart(2,'0'):''} de bonus fun 🍺🧘 — ne compte pour rien, sauf pour Neal</div>`:''}
+    </div>`;
+  document.getElementById('legend').innerHTML = SERIOUS_CATS.map(c=>`<div class="legend-item"><span class="legend-sw" style="background:${CAT_COLOR[c]}"></span>${CAT_LABEL[c]} · cible ${settings.targets[c]}%</div>`).join('')
+    + `<div class="legend-item"><span class="legend-sw" style="background:transparent;border:2px dashed var(--c-bonus);"></span>Bonus fun · hors quota</div>`;
+}
+
+/* ---------- View toggle ---------- */
+let currentView = window.innerWidth < 820 ? 'agenda' : 'cal';
+function setView(v){
+  currentView = v;
+  document.querySelectorAll('.vt-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  document.getElementById('calView').style.display = v==='cal' ? 'grid' : 'none';
+  document.getElementById('calHint').style.display = v==='cal' ? 'block' : 'none';
+  document.getElementById('weekNav').style.display = v==='agenda' ? 'flex' : 'none';
+  document.getElementById('agenda').style.display = v==='agenda' ? 'block' : 'none';
+  document.getElementById('agendaHint').style.display = v==='agenda' ? 'block' : 'none';
+}
+
+/* ---------- Agenda (weekly occurrence tracking) ---------- */
+function occKey(week, id){ return week+'_'+id; }
+function getOcc(week, id){ return occurrences[occKey(week,id)] || {status:null, comment:'', rating:0}; }
+function setOcc(week, id, data){ occurrences[occKey(week,id)] = data; saveAll(); }
+
+function changeWeek(delta){
+  selectedWeek = Math.min(settings.totalWeeks, Math.max(1, selectedWeek+delta));
+  renderAgenda();
+}
+function jumpToday(){ selectedWeek = currentWeekForToday(); renderAgenda(); }
+
+function toggleStatus(id, status){
+  const cur = getOcc(selectedWeek, id);
+  const s = sessions.find(x=>x.id===id);
+  const next = cur.status===status ? null : status;
+  setOcc(selectedWeek, id, Object.assign({}, cur, {status:next, ts:Date.now()}));
+  logChange(`Semaine ${selectedWeek} — « ${s.theme} » marquée ${next==='done'?'faite ✓':next==='missed'?'non faite ✗':'non renseignée'}.`);
+  renderAgenda(); renderStats();
+}
+
+function renderAgenda(){
+  const wkStart = new Date(startDate()); wkStart.setDate(wkStart.getDate() + (selectedWeek-1)*7);
+  document.getElementById('wnWeek').textContent = `Semaine ${selectedWeek} / ${settings.totalWeeks}`;
+  document.getElementById('wnRange').textContent = fmtRange(wkStart);
+  const total = sessions.length;
+  const done = sessions.filter(s=>getOcc(selectedWeek,s.id).status==='done').length;
+  document.getElementById('wnProgress').textContent = `${done}/${total} séances cochées`;
+
+  const el = document.getElementById('agenda');
+  let html='';
+  for(let d=0; d<7; d++){
+    const daySessions = sessions.filter(s=>s.day===d).sort((a,b)=>a.start-b.start);
+    if(!daySessions.length) continue;
+    html += `<div class="agenda-day"><div class="agenda-day-title">${DAYS[d]}</div>`;
+    daySessions.forEach(s=>{
+      const occ = getOcc(selectedWeek, s.id);
+      const statusClass = occ.status==='done' ? 'status-done' : occ.status==='missed' ? 'status-missed' : '';
+      html += `<div class="agenda-card cat-${s.cat} ${statusClass}">
+        <div class="a-time">${timeStr(s.start)}–${timeStr(s.start+s.dur)}</div>
+        <div class="a-body">
+          <div class="a-cat">${CAT_LABEL[s.cat]}</div>
+          <div class="a-theme ${occ.status==='missed'?'strike':''}">${s.theme}</div>
+          ${occ.comment ? `<div class="a-comment">💬 ${occ.comment}${occ.rating?' · '+'★'.repeat(occ.rating):''}</div>` : ''}
+        </div>
+        <div class="a-actions">
+          <button class="a-act ${occ.status==='done'?'on-done':''}" onclick="toggleStatus(${s.id},'done')" title="Fait">✓</button>
+          <button class="a-act ${occ.status==='missed'?'on-missed':''}" onclick="toggleStatus(${s.id},'missed')" title="Non fait">✗</button>
+          <button class="a-act" onclick="openOccModal(${s.id})" title="Commentaire">💬</button>
+          <button class="a-act" onclick="openTemplateModal(${s.id})" title="Modifier la séance type">✏️</button>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  el.innerHTML = html || `<div class="agenda-empty">Aucune séance planifiée.</div>`;
+}
+
+/* ---------- Modal: template edit/add ---------- */
+let modalMode = null, editingId = null;
+function openTemplateModal(id){
+  modalMode='template'; editingId = id || null;
+  const s = id ? sessions.find(x=>x.id===id) : null;
+  document.getElementById('modalBox').innerHTML = `
+    <h3>${id?'Modifier la séance':'Nouvelle séance'}</h3>
+    <div class="field"><label>Catégorie</label>
+      <select id="f-cat">
+        ${Object.keys(CAT_LABEL).map(c=>`<option value="${c}" ${s&&s.cat===c?'selected':''}>${CAT_LABEL[c]}</option>`).join('')}
+      </select></div>
+    <div class="field"><label>Thème / titre</label><input id="f-theme" type="text" value="${s?s.theme.replace(/"/g,'&quot;'):''}" placeholder="Ex : Fourchettes de cavalier"></div>
+    <div class="row2">
+      <div class="field"><label>Jour</label><select id="f-day">${DAYS.map((d,i)=>`<option value="${i}" ${s&&s.day===i?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="field"><label>Heure</label><input id="f-start" type="time" step="900" value="${s?timeStr(s.start):'20:00'}"></div>
+    </div>
+    <div class="field"><label>Durée (minutes)</label><input id="f-dur" type="number" min="15" max="240" step="5" value="${s?s.dur:60}"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" style="${id?'':'visibility:hidden;'}" onclick="deleteTemplate()">Supprimer</button>
+      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveTemplate()">Enregistrer</button></div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function saveTemplate(){
+  const cat = document.getElementById('f-cat').value;
+  const theme = document.getElementById('f-theme').value.trim() || 'Séance libre';
+  const day = parseInt(document.getElementById('f-day').value);
+  const start = parseTime(document.getElementById('f-start').value);
+  const dur = Math.max(15, parseInt(document.getElementById('f-dur').value)||60);
+  if(editingId){
+    const s = sessions.find(x=>x.id===editingId);
+    Object.assign(s, {cat, theme, day, start, dur});
+    logChange(`Séance type modifiée : « ${theme} » (${DAYS[day]} ${timeStr(start)}, ${dur} min).`);
+  } else {
+    sessions.push({id:nextId++, cat, theme, day, start, dur});
+    logChange(`Séance ajoutée : « ${theme} » (${DAYS[day]} ${timeStr(start)}, ${dur} min).`);
+  }
+  closeModal(); saveAll(); renderGrid(); renderAgenda(); renderStats();
+}
+function deleteTemplate(){
+  const s = sessions.find(x=>x.id===editingId);
+  sessions = sessions.filter(x=>x.id!==editingId);
+  logChange(`Séance supprimée : « ${s.theme} ».`);
+  closeModal(); saveAll(); renderGrid(); renderAgenda(); renderStats();
+}
+
+/* ---------- Modal: occurrence (status/comment/rating) ---------- */
+let occSessionId = null;
+function openOccModal(id){
+  modalMode='occurrence'; occSessionId = id;
+  const s = sessions.find(x=>x.id===id);
+  const occ = getOcc(selectedWeek, id);
+  document.getElementById('modalBox').innerHTML = `
+    <h3>${s.theme}</h3>
+    <p style="font-size:12px;color:var(--cream-dim);margin:-8px 0 14px;">Semaine ${selectedWeek} · ${DAYS[s.day]} ${timeStr(s.start)}</p>
+    <div class="field"><label>Statut</label>
+      <div class="status-choice">
+        <button id="st-done" class="${occ.status==='done'?'sel-done':''}" onclick="pickStatus('done')">✓ Fait</button>
+        <button id="st-missed" class="${occ.status==='missed'?'sel-missed':''}" onclick="pickStatus('missed')">✗ Non fait</button>
+        <button id="st-none" onclick="pickStatus(null)">— Effacer</button>
+      </div>
+    </div>
+    <div class="field"><label>Ressenti</label><div class="stars" id="starsRow">${[1,2,3,4,5].map(n=>`<span data-n="${n}" class="${n<=occ.rating?'filled':''}" onclick="pickRating(${n})">★</span>`).join('')}</div></div>
+    <div class="field"><label>Commentaire</label><textarea id="f-comment" placeholder="Ex : galère sur les finales de tours, à refaire.">${occ.comment||''}</textarea></div>
+    <div class="modal-actions">
+      <button class="modal-link" onclick="openTemplateModal(${id})">✏️ Modifier la séance type</button>
+      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveOcc()">Enregistrer</button></div>
+    </div>`;
+  window._occStatus = occ.status; window._occRating = occ.rating||0;
+  document.getElementById('overlay').classList.add('open');
+}
+function pickStatus(st){
+  window._occStatus = st;
+  document.getElementById('st-done').className = st==='done'?'sel-done':'';
+  document.getElementById('st-missed').className = st==='missed'?'sel-missed':'';
+}
+function pickRating(n){
+  window._occRating = n;
+  document.querySelectorAll('#starsRow span').forEach(sp=> sp.classList.toggle('filled', parseInt(sp.dataset.n)<=n));
+}
+function saveOcc(){
+  const s = sessions.find(x=>x.id===occSessionId);
+  const comment = document.getElementById('f-comment').value.trim();
+  setOcc(selectedWeek, occSessionId, {status:window._occStatus, comment, rating:window._occRating||0, ts:Date.now()});
+  logChange(`Semaine ${selectedWeek} — commentaire sur « ${s.theme} »${comment?' : "'+comment.slice(0,60)+'"':' mis à jour'}.`);
+  closeModal(); renderAgenda(); renderStats();
+}
+
+/* ---------- Modal: settings ---------- */
+function openSettings(){
+  modalMode='settings';
+  document.getElementById('modalBox').innerHTML = `
+    <h3>Réglages du programme</h3>
+    <div class="field"><label>Objectif hebdomadaire (heures)</label><input id="s-goal" type="number" min="1" max="40" step="0.5" value="${settings.weeklyGoalMin/60}"></div>
+    <div class="field"><label>Objectifs par catégorie (%)</label>
+      <div class="row4">
+        <input id="s-tac" type="number" min="0" max="100" value="${settings.targets.tactique}">
+        <input id="s-fin" type="number" min="0" max="100" value="${settings.targets.finales}">
+        <input id="s-str" type="number" min="0" max="100" value="${settings.targets.strategie}">
+        <input id="s-par" type="number" min="0" max="100" value="${settings.targets.parties}">
+      </div>
+      <p style="font-size:10.5px;color:var(--cream-dim);margin-top:5px;">Ordre : Tactique · Finales · Stratégie · Parties</p>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Durée du programme (semaines)</label><input id="s-weeks" type="number" min="1" max="52" value="${settings.totalWeeks}"></div>
+      <div class="field"><label>Date de début</label><input id="s-start" type="date" value="${startDate().toISOString().slice(0,10)}"></div>
+    </div>
+    <div class="modal-actions">
+      <div></div>
+      <div style="display:flex;gap:9px;"><button class="btn btn-ghost" onclick="closeModal()">Annuler</button><button class="btn btn-primary" onclick="saveSettings()">Enregistrer</button></div>
+    </div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function saveSettings(){
+  settings.weeklyGoalMin = Math.max(60, parseFloat(document.getElementById('s-goal').value)*60);
+  settings.targets = {
+    tactique: parseInt(document.getElementById('s-tac').value)||0,
+    finales: parseInt(document.getElementById('s-fin').value)||0,
+    strategie: parseInt(document.getElementById('s-str').value)||0,
+    parties: parseInt(document.getElementById('s-par').value)||0,
+  };
+  settings.totalWeeks = Math.max(1, parseInt(document.getElementById('s-weeks').value)||15);
+  const newStart = new Date(document.getElementById('s-start').value+'T00:00:00');
+  settings.startDateISO = newStart.toISOString();
+  logChange('Réglages du programme mis à jour (objectifs, durée ou date de départ).');
+  closeModal(); saveAll(); selectedWeek = currentWeekForToday(); renderAgenda(); renderStats(); renderCurriculum();
+}
+
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); modalMode=null; }
+document.getElementById('overlay').addEventListener('click',(e)=>{ if(e.target.id==='overlay') closeModal(); });
+
+/* ---------- History ---------- */
+function renderHistory(){
+  const el = document.getElementById('history');
+  if(!changeLog.length){ el.innerHTML = `<div class="hist-empty">Aucune modification enregistrée pour l'instant.</div>`; return; }
+  el.innerHTML = changeLog.map(h=>`<div class="hist-row"><div class="hist-time">il y a ${relTime(h.ts)}</div><div class="hist-text">${h.text}</div></div>`).join('');
+}
+
+/* ---------- Curriculum ---------- */
+const curriculum = [
+  {phase:'Phase 1 — Fondations', weeks:[1,2,3,4], desc:'Poser les bases : motifs tactiques élémentaires, finales de pions, structures simples. Oui Neal, même toi tu dois réviser l’opposition.', rows:[
+    ['1','Fourchettes et clouages','Roi + pion vs roi : l’opposition','Pion isolé, pion doublé'],
+    ['2','Enfilades et attaques à la découverte','Le carré du pion','Avant-postes et cases fortes'],
+    ['3','Attaques doubles, échecs à la découverte','Roi + 2 pions vs roi','Colonnes ouvertes et semi-ouvertes'],
+    ['4','Combinaisons à motifs mixtes (révision)','Percée de pions','Bilan phase 1 : partie longue + auto-analyse'],
+  ]},
+  {phase:'Phase 2 — Consolidation', weeks:[5], desc:'Approfondir : sacrifices classiques, finales de tours, plans stratégiques.', rows:[
+    ['5','Déviation et surcharge','Finales de tours : la règle de Lucena','Échange de pièces : quand simplifier'],
+  ]},
+  {phase:'Prépa tournoi — Taper', weeks:[6], desc:"Semaine du 19–25 oct : on réduit le volume, on n’apprend plus rien de neuf. Ronde 1 le samedi 24.", rows:[
+    ['6','Puzzles déjà maîtrisés uniquement','Relis ta fiche mémo de finales types (5 min/jour)','Relecture du répertoire d’ouvertures — surface, pas de profondeur'],
+  ]},
+  {phase:'Tournoi', weeks:[7], desc:"Semaine du 26 oct–1 nov : rondes du tournoi jusqu’au samedi 31. Le café est autorisé, la 4ème bière la veille d’une ronde beaucoup moins.", rows:[
+    ['7','10–15 min d’échauffement tactique avant chaque ronde','Pas de nouvelle étude — priorité au repos','Debrief à chaud (15 min max), analyse complète différée'],
+  ]},
+  {phase:'Récupération & bilan', weeks:[8], desc:'Semaine du 2–8 nov : on souffle, puis on exploite les parties du tournoi.', rows:[
+    ['8','Volume réduit ou pause','—','Analyse approfondie de toutes tes parties de tournoi'],
+  ]},
+  {phase:'Phase 2 (suite) — Consolidation', weeks:[9,10,11], desc:'On reprend le fil là où on l’avait laissé avant le tournoi.', rows:[
+    ['9','Interférence, mats étouffés','Position de Philidor','Jeu sur les ailes opposées'],
+    ['10','Sacrifices thématiques (Grec, Gréco)','Finales de fous de même couleur','Cases faibles et complexes de cases'],
+    ['11','Mats typiques (couloir, échelle, Boden)','Finales de fous de couleurs opposées','Bilan phase 2 : partie longue + auto-analyse'],
+  ]},
+  {phase:'Phase 3 — Perfectionnement', weeks:[12,13,14,15], desc:'Complexifier : calcul profond, finales mixtes, évaluation et prophylaxie.', rows:[
+    ['12','Calcul de variantes à 3–4 coups','Finales tour + fou vs tour + cavalier','Prophylaxie : anticiper le plan adverse'],
+    ['13','Puzzles en position complexe','Finales de dames : échecs perpétuels','Transition milieu de jeu → finale'],
+    ['14','Zwischenzug et coups intermédiaires','Zugzwang et triangulation','Évaluation de position'],
+    ['15','Tactique sous pression (blitz puzzles)','Finales pratiques mixtes (révision)','Bilan général + analyse complète'],
+  ]},
+];
+function renderCurriculum(){
+  const s0 = startDate();
+  document.getElementById('dateRange').textContent = `Programme du ${s0.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} au ` +
+    (()=>{const e=new Date(s0); e.setDate(e.getDate()+settings.totalWeeks*7-1); return e.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});})() +
+    `. Ton tournoi se termine le 31 octobre, jour d'Halloween ; le lendemain c'est la Toussaint, jour férié. Même le calendrier a prévu ton repos, Neal.`;
+  document.getElementById('curriculum').innerHTML = curriculum.map(ph=>{
+    const rows = ph.rows.map((r,i)=>{
+      const wkNum = ph.weeks[i]; const wkStart = new Date(s0); wkStart.setDate(wkStart.getDate()+(wkNum-1)*7);
+      return `<tr><td class="wk">Sem. ${wkNum}<br><span style="opacity:.6;font-size:10.5px;">${fmtRange(wkStart)}</span></td>
+        <td class="tag tag-tactique"></td><td>${r[1]}</td><td class="tag tag-finales"></td><td>${r[2]}</td><td class="tag tag-strategie"></td><td>${r[3]}</td></tr>`;
+    }).join('');
+    return `<div class="phase"><div class="phase-head"><h3>${ph.phase}</h3><span>${ph.desc}</span></div>
+      <table class="curr"><thead><tr><th>Semaine</th><th></th><th>Tactique</th><th></th><th>Finales</th><th></th><th>Stratégie</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }).join('');
+}
+
+renderHeads(); renderHourLabels(); renderGrid(); renderStats(); renderCurriculum(); renderHistory();
+setView(currentView); renderAgenda();
+</script>
+</body>
+</html>
