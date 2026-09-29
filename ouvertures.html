@@ -839,6 +839,7 @@ const Ed = {
   newNode(san, parent){ const n = {id: ++this.nid, san, parent, children: [], lineIds: []}; this.nodes.set(n.id, n); return n; },
   init(){
     this.board = new Board($("#ed-board"), { onMove: m=>this.play(m) });
+    this.board.game = this.game;
     this.clearTree();
     $("#ed-first").onclick = ()=>this.goNode(this.root);
     $("#ed-prev").onclick = ()=>{ if(this.cur.parent) this.goNode(this.cur.parent); };
