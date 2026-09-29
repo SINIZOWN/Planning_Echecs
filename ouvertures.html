@@ -138,7 +138,10 @@ h3{font-family:var(--f-display);font-weight:600;font-size:1.05rem;margin:0}
 .opening .on{font-weight:700}
 .xp-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
 .xp-head a{font-size:.85rem;color:var(--accent)}
-.xp{display:flex;flex-direction:column;gap:4px}
+.xp{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;overscroll-behavior:contain}
+#eng-lines{display:flex;flex-direction:column;gap:2px}
+.pv.ph{cursor:default;color:var(--muted)}
+.pv.ph:hover{border-color:transparent;background:none}
 .xp button{display:grid;grid-template-columns:4em minmax(0,1fr) auto;gap:10px;align-items:baseline;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%}
 .xp button:hover{border-color:var(--accent)}
 .xp .san{font-family:var(--f-mono);font-weight:500}
@@ -280,7 +283,7 @@ textarea.out{width:100%;min-height:160px;font-family:var(--f-mono);font-size:.8r
           <div id="ed-msg"></div>
           <div class="actions">
             <button class="btn primary" id="ed-save">Enregistrer la variante</button>
-            <button class="btn ghost" id="ed-new">Tout effacer</button>
+            <button class="btn" id="ed-new">Tout effacer</button>
           </div>
           <details class="imp">
             <summary>Importer depuis un PGN</summary>
@@ -1011,7 +1014,9 @@ const Ed = {
     const lines = Engine.fen === g.fen() ? Engine.lines.filter(Boolean) : [];
     meta.textContent = !Engine.ready ? "Démarrage de Stockfish…" : lines.length ? `Stockfish · profondeur ${lines[0].depth}` : "Calcul…";
     $("#eng-bar").style.width = evalPct(lines[0]) + "%";
-    $("#eng-lines").innerHTML = lines.map((l,i)=>`<button class="pv" data-pv="${i}"><span class="ev">${evalText(l)}</span><span class="ln">${pvSan(g.fen(), l.pv, 12)}</span></button>`).join("") || `<p class="muted" style="margin:0;font-size:.9rem">Analyse en cours…</p>`;
+    let rows = lines.slice(0,3).map((l,i)=>`<button class="pv" data-pv="${i}"><span class="ev">${evalText(l)}</span><span class="ln">${pvSan(g.fen(), l.pv, 12)}</span></button>`);
+    while(rows.length < 3) rows.push(`<div class="pv ph" aria-hidden="true"><span class="ev">…</span><span class="ln">${rows.length===0 ? "Analyse en cours" : "&nbsp;"}</span></div>`);
+    $("#eng-lines").innerHTML = rows.join("");
   },
   async save(){
     const leaves = this.leaves();
