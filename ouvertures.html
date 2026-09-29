@@ -102,8 +102,8 @@ h3{font-family:var(--f-display);font-weight:600;font-size:1.05rem;margin:0}
 .dot{position:absolute;inset:36%;border-radius:50%;background:rgba(20,30,50,.28);z-index:3;pointer-events:none}
 .cap{position:absolute;inset:4%;border-radius:50%;border:.9cqw solid rgba(20,30,50,.28);z-index:3;pointer-events:none}
 .arrows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
-.ghost{position:fixed;pointer-events:none;z-index:1000;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
-.ghost .pc{cursor:grabbing}
+.drag-ghost{position:fixed;pointer-events:none;z-index:1000;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.drag-ghost .pc{cursor:grabbing}
 .promo{position:absolute;inset:0;z-index:10;background:rgba(10,15,25,.55);display:grid;place-items:center}
 .promo div{display:flex;gap:1.5cqw;background:var(--panel);padding:2cqw;border-radius:10px}
 .promo button{width:13cqw;height:13cqw;border:1px solid var(--line);border-radius:8px;background:var(--sq-l);cursor:pointer;position:relative;padding:0}
@@ -447,7 +447,7 @@ class Board{
       this.sel = sq;
       const size = this.el.getBoundingClientRect().width/8;
       const gh = document.createElement("span");
-      gh.className = "ghost"; gh.hidden = true;
+      gh.className = "drag-ghost"; gh.hidden = true;
       gh.innerHTML = `<span class="pc ${p.color}${p.type}"></span>`;
       gh.style.width = gh.style.height = size+"px";
       document.body.appendChild(gh);
