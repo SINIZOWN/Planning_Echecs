@@ -140,6 +140,21 @@ h3{font-family:var(--f-display);font-weight:600;font-size:1.05rem;margin:0}
 .xp-head a{font-size:.85rem;color:var(--accent)}
 .xp{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;overscroll-behavior:contain}
 #eng-lines{display:flex;flex-direction:column;gap:2px}
+.xp.loading{opacity:.5;pointer-events:none}
+.xp.live button{grid-template-columns:3.6em 6.5em minmax(0,1fr) auto}
+.xp .games{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.wdl{display:flex;height:6px;border-radius:3px;overflow:hidden;width:100%}
+.wdl i{display:block;height:100%}
+.wdl .w{background:#f1ede4}.wdl .d{background:#8c8272}.wdl .b{background:#15110d}
+.xp .mine.tree{background:var(--accent-soft);color:var(--accent)}
+.xp-head select{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:3px 6px;font-size:.85rem;max-width:100%}
+.xp-note{margin:0 0 6px;font-size:.88rem}
+.xp-foot{margin-top:8px;font-size:.8rem;color:var(--muted)}
+.xp-foot a{color:var(--accent)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:inherit;text-decoration:underline}
+.xp-connect{margin-top:10px;padding:10px 12px;border:1px dashed var(--accent);border-radius:8px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.xp-connect p{margin:0;font-size:.88rem;color:var(--muted)}
+@media (max-width:480px){.xp.live button{grid-template-columns:3.2em 5.2em minmax(0,1fr)}.xp.live .mine{grid-column:1 / -1;justify-self:start}}
 .pv.ph{cursor:default;color:var(--muted)}
 .pv.ph:hover{border-color:transparent;background:none}
 .xp button{display:grid;grid-template-columns:4em minmax(0,1fr) auto;gap:10px;align-items:baseline;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 10px;cursor:pointer;width:100%}
@@ -738,6 +753,11 @@ $("#view-rep").addEventListener("input", e=>{
 
 /* ---------------- Opening names & theory ---------------- */
 const FR_FAMILY = {"Sicilian Defense":"Défense sicilienne","Ruy Lopez":"Partie espagnole","French Defense":"Défense française","Italian Game":"Partie italienne","Queen's Gambit Declined":"Gambit dame refusé","English Opening":"Partie anglaise","King's Gambit Accepted":"Gambit du roi accepté","King's Indian Defense":"Défense est-indienne","Caro-Kann Defense":"Défense Caro-Kann","Nimzo-Indian Defense":"Défense nimzo-indienne","Dutch Defense":"Défense hollandaise","Queen's Pawn Game":"Début du pion dame","Grünfeld Defense":"Défense Grünfeld","Alekhine Defense":"Défense Alekhine","Benoni Defense":"Défense Benoni","Indian Defense":"Défense indienne","King's Gambit Declined":"Gambit du roi refusé","Semi-Slav Defense":"Défense semi-slave","Queen's Gambit Accepted":"Gambit dame accepté","Scotch Game":"Partie écossaise","Queen's Indian Defense":"Défense ouest-indienne","Slav Defense":"Défense slave","Zukertort Opening":"Ouverture Zukertort","Petrov's Defense":"Défense russe (Petrov)","Scandinavian Defense":"Défense scandinave","Four Knights Game":"Partie des quatre cavaliers","Nimzowitsch Defense":"Défense Nimzowitsch","Bishop's Opening":"Partie du fou","Vienna Game":"Partie viennoise","Modern Defense":"Défense moderne","Philidor Defense":"Défense Philidor","King's Pawn Game":"Début du pion roi","Bird Opening":"Ouverture Bird","Tarrasch Defense":"Défense Tarrasch","Polish Opening":"Ouverture polonaise","Pirc Defense":"Défense Pirc","Réti Opening":"Ouverture Réti","Grob Opening":"Ouverture Grob","Hungarian Opening":"Ouverture hongroise","Catalan Opening":"Ouverture catalane","Blackmar-Diemer Gambit":"Gambit Blackmar-Diemer","Blackmar-Diemer Gambit Accepted":"Gambit Blackmar-Diemer accepté","Blackmar-Diemer Gambit Declined":"Gambit Blackmar-Diemer refusé","Latvian Gambit":"Gambit letton","Latvian Gambit Accepted":"Gambit letton accepté","Center Game":"Partie du centre","Nimzo-Larsen Attack":"Attaque Nimzo-Larsen","King's Indian Attack":"Attaque est-indienne","Old Indian Defense":"Défense vieille-indienne","Neo-Grünfeld Defense":"Défense néo-Grünfeld","Ponziani Opening":"Partie Ponziani","Rat Defense":"Défense du rat","Bogo-Indian Defense":"Défense bogo-indienne","Englund Gambit":"Gambit Englund","Englund Gambit Declined":"Gambit Englund refusé","Trompowsky Attack":"Attaque Trompowsky","Benko Gambit":"Gambit Benko","Benko Gambit Accepted":"Gambit Benko accepté","Benko Gambit Declined":"Gambit Benko refusé","Owen Defense":"Défense Owen","Torre Attack":"Attaque Torre","English Defense":"Défense anglaise","Danish Gambit":"Gambit danois","Danish Gambit Accepted":"Gambit danois accepté","Three Knights Opening":"Partie des trois cavaliers","Elephant Gambit":"Gambit de l'éléphant","King's Pawn Opening":"Ouverture du pion roi","King's Knight Opening":"Ouverture du cavalier roi","Colle System":"Système Colle","Horwitz Defense":"Défense Horwitz","Polish Defense":"Défense polonaise","London System":"Système de Londres","Richter-Veresov Attack":"Attaque Richter-Veresov","Budapest Defense":"Gambit Budapest","Modern Benoni":"Benoni moderne","Czech Defense":"Défense tchèque","Hippopotamus Defense":"Défense hippopotame","Van't Kruijs Opening":"Ouverture Van't Kruijs","Mieses Opening":"Ouverture Mieses","Saragossa Opening":"Ouverture Saragosse","Portuguese Opening":"Ouverture portugaise","Blumenfeld Countergambit":"Contre-gambit Blumenfeld","Anderssen's Opening":"Ouverture Anderssen","Amar Opening":"Ouverture Amar","Kádas Opening":"Ouverture Kádas","Ware Opening":"Ouverture Ware","Barnes Opening":"Ouverture Barnes","Rubinstein Opening":"Ouverture Rubinstein","Sodium Attack":"Attaque Sodium","Borg Defense":"Défense Borg","Lion Defense":"Défense du lion","Pterodactyl Defense":"Défense ptérodactyle","Van Geet Opening":"Ouverture Van Geet","St. George Defense":"Défense Saint-Georges","Mikenas Defense":"Défense Mikenas"};
+function frOpening(raw){
+  const [fam, ...rest] = String(raw).split(": ");
+  const family = FR_FAMILY[fam] || fam;
+  return {family, name: rest.length ? family + " : " + rest.join(": ") : family};
+}
 function fnv(s){ let x = 0x811c9dc5; for(let i=0;i<s.length;i++){ x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193) >>> 0; } return x.toString(36); }
 const Openings = {
   data: null, failed: false, loading: null,
@@ -748,12 +768,7 @@ const Openings = {
     return this.loading;
   },
   at(fen){ return this.data ? this.data.pos[fnv(posKey(fen))] : null; },
-  nameOf(i){
-    const [eco, raw] = this.data.names[i];
-    const [fam, ...rest] = raw.split(": ");
-    const family = FR_FAMILY[fam] || fam;
-    return {eco, family, name: rest.length ? family + " : " + rest.join(": ") : family};
-  },
+  nameOf(i){ const [eco, raw] = this.data.names[i]; return Object.assign({eco}, frOpening(raw)); },
   forPath(moves){
     if(!this.data) return null;
     const g = new Chess(); let best = null;
@@ -836,6 +851,74 @@ function pvSan(fen, pv, max){
 }
 function lichessLink(fen){ return "https://lichess.org/analysis/standard/" + fen.replace(/ /g, "_"); }
 
+/* ---------------- Lichess opening explorer (connexion OAuth PKCE, sans mot de passe côté site) ---------------- */
+const LX = {
+  TOKEN_KEY: "lichess-token", SRC_KEY: "lichess-source", CLIENT_ID: "planning-echecs-ouvertures",
+  token: null, cache: new Map(), inflight: new Map(), error: null, source: "lichess",
+  SOURCES: {
+    lichess: {label:"Lichess · tous niveaux", params:"speeds=blitz,rapid,classical&ratings=1000,1200,1400,1600,1800,2000,2200,2500"},
+    club: {label:"Lichess · 1600 à 2000", params:"speeds=blitz,rapid,classical&ratings=1600,1800,2000"},
+    fort: {label:"Lichess · 2000 et plus", params:"speeds=blitz,rapid,classical&ratings=2000,2200,2500"},
+    masters: {label:"Parties de maîtres", params:""}
+  },
+  init(){
+    try{ this.token = localStorage.getItem(this.TOKEN_KEY); const s = localStorage.getItem(this.SRC_KEY); if(this.SOURCES[s]) this.source = s; }catch(e){}
+    return this.finishLogin();
+  },
+  redirectUri(){ return location.origin + location.pathname; },
+  b64url(buf){ return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); },
+  async login(){
+    const rnd = crypto.getRandomValues(new Uint8Array(48));
+    const verifier = this.b64url(rnd);
+    const challenge = this.b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+    const state = this.b64url(crypto.getRandomValues(new Uint8Array(12)));
+    try{ sessionStorage.setItem("lichess-pkce", JSON.stringify({verifier, state, back: location.search})); }catch(e){}
+    const q = new URLSearchParams({response_type:"code", client_id:this.CLIENT_ID, redirect_uri:this.redirectUri(), code_challenge_method:"S256", code_challenge:challenge, state});
+    location.href = "https://lichess.org/oauth?" + q.toString();
+  },
+  async finishLogin(){
+    const q = new URLSearchParams(location.search);
+    const code = q.get("code"); if(!code && !q.get("error")) return false;
+    let saved = null; try{ saved = JSON.parse(sessionStorage.getItem("lichess-pkce") || "null"); sessionStorage.removeItem("lichess-pkce"); }catch(e){}
+    history.replaceState(null, "", location.pathname + ((saved && saved.back) || ""));
+    if(!code || !saved || saved.state !== q.get("state")){ toast("Connexion à Lichess annulée."); return false; }
+    try{
+      const r = await fetch("https://lichess.org/api/token", {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body: new URLSearchParams({grant_type:"authorization_code", code, code_verifier:saved.verifier, redirect_uri:this.redirectUri(), client_id:this.CLIENT_ID})});
+      const d = await r.json();
+      if(!r.ok || !d.access_token) throw 0;
+      this.token = d.access_token; try{ localStorage.setItem(this.TOKEN_KEY, this.token); }catch(e){}
+      toast("Connecté à Lichess : l'arbre d'ouverture affiche maintenant les statistiques de parties.");
+      show("edit");
+      return true;
+    }catch(e){ toast("La connexion à Lichess a échoué. Réessayez."); return false; }
+  },
+  logout(){
+    const t = this.token; this.token = null; this.cache.clear(); try{ localStorage.removeItem(this.TOKEN_KEY); }catch(e){}
+    if(t) fetch("https://lichess.org/api/token", {method:"DELETE", headers:{Authorization:"Bearer "+t}}).catch(()=>{});
+  },
+  setSource(s){ if(!this.SOURCES[s]) return; this.source = s; try{ localStorage.setItem(this.SRC_KEY, s); }catch(e){} },
+  key(fen){ return this.source + "|" + fen; },
+  get(fen){ return this.cache.get(this.key(fen)); },
+  fetch(fen){
+    const k = this.key(fen);
+    if(this.cache.has(k)) return Promise.resolve(this.cache.get(k));
+    if(this.inflight.has(k)) return this.inflight.get(k);
+    const src = this.SOURCES[this.source];
+    const url = `https://explorer.lichess.org/${this.source==="masters" ? "masters" : "lichess"}?variant=standard&fen=${encodeURIComponent(fen)}&moves=15&topGames=0&recentGames=0${src.params ? "&"+src.params : ""}`;
+    const p = fetch(url, {headers:{Authorization:"Bearer " + this.token}}).then(async r=>{
+      if(r.status === 401){ this.logout(); this.error = "auth"; throw 0; }
+      if(r.status === 429){ this.error = "rate"; throw 0; }
+      if(!r.ok){ this.error = "net"; throw 0; }
+      const d = await r.json(); this.error = null;
+      this.cache.set(k, d); return d;
+    }).catch(()=>{ if(!this.error) this.error = "net"; return null; }).finally(()=>this.inflight.delete(k));
+    this.inflight.set(k, p);
+    return p;
+  }
+};
+function fmtGames(n){ return n >= 1e6 ? (n/1e6).toFixed(1).replace(".", ",") + " M" : n >= 1e3 ? Math.round(n/1e3) + " k" : String(n); }
+
 /* ----- Editor (move tree) ----- */
 const Ed = {
   root: null, cur: null, nodes: new Map(), nid: 0, color: "w", game: new Chess(), board: null, scope: null,
@@ -858,6 +941,11 @@ const Ed = {
     Engine.onUpdate = ()=>{ if(view==="edit") this.renderEngine(); };
     $("#ed-color").addEventListener("click", e=>{ const b = e.target.closest("button"); if(b) this.setColor(b.dataset.c, true); });
     $("#ed-moves").addEventListener("click", e=>{ const m = e.target.closest("[data-n]"); if(m) this.goNode(this.nodes.get(+m.dataset.n)); });
+    $("#ed-known").addEventListener("click", e=>{
+      const x = e.target.closest("[data-lx]");
+      if(x){ if(x.dataset.lx==="login") LX.login(); else { LX.logout(); this.renderExplorer(); toast("Déconnecté de Lichess."); } return; }
+    });
+    $("#ed-known").addEventListener("change", e=>{ if(e.target.id==="lx-src"){ LX.setSource(e.target.value); this.renderExplorer(); } });
     $("#ed-known").addEventListener("click", e=>{ const b = e.target.closest("[data-san]"); if(b){ const mv = this.game.move(b.dataset.san); if(mv){ this.game.undo(); this.play(mv); } } });
     document.addEventListener("keydown", e=>{
       if(view!=="edit" || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
@@ -971,28 +1059,57 @@ const Ed = {
   },
   renderExplorer(){
     const fen = this.game.fen();
-    const theory = Openings.next(fen);
     const here = getIndex().get(posKey(fen)) || [];
     const mine = new Map(); here.forEach(x=>{ if(!mine.has(x.san)) mine.set(x.san, []); mine.get(x.san).push(x.line); });
-    const rows = new Map();
-    theory.forEach(t=>rows.set(t.san, {san:t.san, op:t.op, exact:t.exact, n:t.n, mine:[]}));
-    mine.forEach((ls, san)=>{
-      const r = rows.get(san) || {san, op:null, mine:[]};
-      if(!r.op && Openings.data){ const g = new Chess(fen); if(g.move(san)){ const e = Openings.at(g.fen()); if(e) r.op = Openings.nameOf(e[0]>=0?e[0]:e[1]); } }
-      r.mine = ls; rows.set(san, r);
-    });
     const inTree = new Set(this.cur.children.map(c=>c.san));
+    const catalogName = san=>{ if(!Openings.data) return null; const g = new Chess(fen); if(!g.move(san)) return null; const e = Openings.at(g.fen()); return e ? Openings.nameOf(e[0]>=0?e[0]:e[1]) : null; };
+    const badge = r=> r.mine && r.mine.length ? `<span class="mine" title="${esc(r.mine.map(l=>l.name).join(", "))}">Mon répertoire${r.mine.length>1?" · "+r.mine.length:""}</span>` : inTree.has(r.san) ? `<span class="mine tree">Dans l'arbre</span>` : "<span></span>";
+    let h = `<div class="xp-head"><span class="lbl">Arbre d'ouverture</span>` +
+      (LX.token ? `<select id="lx-src" aria-label="Base de parties">${Object.entries(LX.SOURCES).map(([k,v])=>`<option value="${k}" ${LX.source===k?"selected":""}>${v.label}</option>`).join("")}</select>` : "") + `</div>`;
+
+    if(LX.token){
+      const d = LX.get(fen);
+      if(!d){
+        const cur = $("#ed-known .xp");
+        LX.fetch(fen).then(()=>{ if(view==="edit" && this.game.fen()===fen) this.renderExplorer(); });
+        if(cur && !LX.error){ cur.classList.add("loading"); return; }
+        h += `<p class="muted xp-note">${LX.error==="rate" ? "Lichess demande de patienter quelques secondes." : LX.error==="net" ? "Lichess ne répond pas. Vérifiez votre connexion." : "Chargement des statistiques…"}</p>`;
+      } else {
+        const total = d.white + d.draws + d.black;
+        const rows = d.moves.map(m=>{
+          const n = m.white + m.draws + m.black;
+          return {san:m.san, n, w:m.white/n*100, dr:m.draws/n*100, b:m.black/n*100, op: m.opening ? frOpening(m.opening.name) : catalogName(m.san), mine: mine.get(m.san) || []};
+        });
+        mine.forEach((ls, san)=>{ if(!rows.some(r=>r.san===san)) rows.push({san, n:0, op:catalogName(san), mine:ls}); });
+        const op = d.opening ? frOpening(d.opening.name) : null;
+        h += `<p class="muted xp-note">${fmtGames(total)} partie${total>1?"s":""}${op ? ` · ${esc(op.name)}` : ""}</p>`;
+        if(!rows.length) h += `<p class="muted xp-note">Aucune partie connue depuis cette position dans cette base.</p>`;
+        else h += `<div class="xp live">` + rows.map(r=>`<button data-san="${esc(r.san)}">
+          <span class="san">${fig(r.san)}</span>
+          <span class="games">${r.n ? fmtGames(r.n) : "—"}${r.n ? `<span class="wdl" title="Blancs ${Math.round(r.w)} % · nulles ${Math.round(r.dr)} % · Noirs ${Math.round(r.b)} %"><i class="w" style="width:${r.w}%"></i><i class="d" style="width:${r.dr}%"></i><i class="b" style="width:${r.b}%"></i></span>` : ""}</span>
+          <span class="who${r.op?"":" none"}">${r.op ? esc(r.op.name) : ""}</span>
+          ${badge(r)}
+        </button>`).join("") + `</div>`;
+      }
+      h += `<div class="xp-foot">Statistiques Lichess · <a href="${lichessLink(fen)}" target="_blank" rel="noopener">Ouvrir sur Lichess ↗</a> · <button class="linkbtn" data-lx="logout">Se déconnecter</button></div>`;
+      $("#ed-known").innerHTML = h;
+      return;
+    }
+
+    const rows = new Map();
+    Openings.next(fen).forEach(t=>rows.set(t.san, {san:t.san, op:t.op, n:t.n, mine:[]}));
+    mine.forEach((ls, san)=>{ const r = rows.get(san) || {san, op:catalogName(san), mine:[]}; r.mine = ls; rows.set(san, r); });
     const list = [...rows.values()].sort((a,b)=>(b.mine.length>0)-(a.mine.length>0) || (inTree.has(b.san))-(inTree.has(a.san)) || (b.n||0)-(a.n||0));
-    let h = `<div class="xp-head"><span class="lbl">Arbre d'ouverture</span><a href="${lichessLink(fen)}" target="_blank" rel="noopener">Statistiques de parties sur Lichess ↗</a></div>`;
     if(!list.length){
-      h += `<p class="muted" style="margin:0;font-size:.9rem">${this.cur.parent ? "Plus aucune ouverture répertoriée ne continue depuis cette position." : "Chargement…"}</p>`;
+      h += `<p class="muted xp-note">${this.cur.parent ? "Plus aucune ouverture nommée ne continue depuis cette position." : "Chargement…"}</p>`;
     } else {
-      h += `<div class="xp">` + list.map(r=>`<button data-san="${esc(r.san)}" title="${r.mine.length ? esc(r.mine.map(l=>l.name).join(", ")) : ""}">
+      h += `<div class="xp">` + list.map(r=>`<button data-san="${esc(r.san)}">
         <span class="san">${fig(r.san)}</span>
         <span class="who${r.op?"":" none"}">${r.op ? esc(r.op.name) : "Hors catalogue"}</span>
-        ${r.mine.length ? `<span class="mine">Mon répertoire${r.mine.length>1?" · "+r.mine.length:""}</span>` : inTree.has(r.san) ? `<span class="mine" style="background:var(--accent-soft);color:var(--accent)">Dans l'arbre</span>` : "<span></span>"}
+        ${badge(r)}
       </button>`).join("") + `</div>`;
     }
+    h += `<div class="xp-connect"><p>Ces coups viennent du catalogue des ouvertures nommées, qui s'arrête vite. Connectez-vous à Lichess pour voir les coups joués dans des millions de parties, avec leurs résultats, aussi loin que vous voulez.</p><button class="btn small primary" data-lx="login">Se connecter à Lichess</button></div>`;
     $("#ed-known").innerHTML = h;
   },
   renderEngine(){
@@ -1333,7 +1450,7 @@ if(typeof Chess === "undefined"){
 }
 document.title = `Répertoire d'ouvertures — ${PLAYERS[PLAYER]}`;
 document.querySelectorAll("#who-sel a").forEach(a=>a.classList.toggle("on", a.dataset.p===PLAYER));
-Engine.init(); Ed.init(); Tr.init(); Openings.load();
+Engine.init(); Ed.init(); Tr.init(); Openings.load(); LX.init();
 Store.on(()=>{
   refreshChrome();
   if(view==="rep") renderRep();
