@@ -32,6 +32,7 @@
   .card .name{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:6px;}
   .card .desc{font-size:12.5px;color:var(--cream-dim);line-height:1.5;}
   .card .arrow{margin-top:14px;font-size:12px;color:var(--gold);font-weight:600;}
+  .card.wide{grid-column:1 / -1;}
   @media (max-width:520px){ .cards{grid-template-columns:1fr;} }
 </style>
 </head>
@@ -50,6 +51,11 @@
         <div class="name">Kevin</div>
         <div class="desc">Même structure, mêmes disponibilités, même tournoi — et déjà ses propres séances bonus pour souffler.</div>
         <div class="arrow">Voir le plan →</div>
+      </a>
+      <a class="card wide" href="ouvertures.html">
+        <div class="name">Répertoire d'ouvertures</div>
+        <div class="desc">Enregistre tes variantes en arbre, analyse-les avec Stockfish, puis rejoue-les sans faute grâce à la répétition espacée.</div>
+        <div class="arrow">Ouvrir le carnet →</div>
       </a>
     </div>
   </div>
