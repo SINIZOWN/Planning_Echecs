@@ -31,8 +31,9 @@ img{max-width:100%}
 nav.site{display:flex;gap:6px;flex-wrap:wrap;padding-top:28px}
 nav.site a{color:var(--muted);text-decoration:none;font-size:12.5px;padding:6px 12px;border:1px solid var(--line);border-radius:6px}
 nav.site a.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
-.who-sel{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted)}
-.who-sel a{color:var(--muted);text-decoration:none;padding:3px 10px;border-radius:99px;border:1px solid var(--line)}
+.who-sel{display:flex;gap:6px;align-items:center;font-size:.95rem;color:var(--muted)}
+.who-sel a{color:var(--ink);text-decoration:none;padding:6px 16px;border-radius:99px;border:1px solid var(--line);font-weight:600}
+.who-sel a:hover{border-color:var(--accent)}
 .who-sel a.on{color:var(--accent-ink);background:var(--accent);border-color:var(--accent);font-weight:600}
 button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:0 48px}
@@ -226,7 +227,7 @@ textarea.out{width:100%;min-height:160px;font-family:var(--f-mono);font-size:.8r
   </nav>
   <header class="top">
     <div class="brand"><span class="mk" aria-hidden="true">♞&#xFE0E;</span>Répertoire d'ouvertures</div>
-    <div class="who-sel" id="who-sel">de <a href="ouvertures.html?joueur=kevin" data-p="kevin">Kevin</a><a href="ouvertures.html?joueur=neal" data-p="neal">Neal</a></div>
+    <div class="who-sel" id="who-sel">Répertoire de <a href="ouvertures.html?joueur=kevin" data-p="kevin">Kevin</a><a href="ouvertures.html?joueur=neal" data-p="neal">Neal</a></div>
     <nav class="tabs" aria-label="Sections">
       <button id="tab-rep" data-view="rep" aria-current="true">Répertoire</button>
       <button id="tab-edit" data-view="edit">Ajouter</button>
@@ -629,7 +630,15 @@ function refreshChrome(){
 }
 
 /* ----- Repertoire ----- */
-const Rep = { side:"all", q:"", exportOpen:false, renaming:null };
+const SORTS = {chap:"Chapitre puis coups", due:"À réviser en premier", level:"Niveau (moins sues d'abord)", recent:"Ajoutées récemment", name:"Nom (A → Z)"};
+const Rep = { side:"all", q:"", exportOpen:false, renaming:null, sort:(()=>{ try{ const v = localStorage.getItem("carnet-tri"); return SORTS[v] ? v : "chap"; }catch(e){ return "chap"; } })() };
+const sortFns = {
+  chap: (a,b)=>a.moves.join(" ").localeCompare(b.moves.join(" ")),
+  due: (a,b)=>{ const k = l=> isNew(l) ? Infinity : (l.due||0); return k(a)-k(b) || a.name.localeCompare(b.name,"fr"); },
+  level: (a,b)=>(a.box||0)-(b.box||0) || a.name.localeCompare(b.name,"fr"),
+  recent: (a,b)=>(b.createdAt||0)-(a.createdAt||0),
+  name: (a,b)=>a.name.localeCompare(b.name,"fr")
+};
 function statusChip(l){
   if(isNew(l)) return `<span class="chip new">Nouvelle</span>`;
   if(isDue(l)) return `<span class="chip due">À réviser</span>`;
@@ -660,6 +669,7 @@ function renderRep(){
       <button data-s="b" aria-pressed="${Rep.side==="b"}"><span class="dotc b"></span>Noirs</button>
     </div>
     <div class="field"><input id="rep-q" type="search" placeholder="Chercher un nom, un chapitre ou un coup (ex. Nf3)" value="${esc(Rep.q)}" aria-label="Chercher"></div>
+    <div class="field" style="flex:none;min-width:0"><select id="rep-sort" aria-label="Trier par">${Object.entries(SORTS).map(([k,v])=>`<option value="${k}" ${Rep.sort===k?"selected":""}>Tri : ${v}</option>`).join("")}</select></div>
     <button class="btn" data-go="edit">+ Nouvelles variantes</button>
     <button class="btn ghost" id="rep-export">Exporter en PGN</button>
   </div>`;
@@ -670,16 +680,17 @@ function renderRep(){
   const list = all.filter(l=> (Rep.side==="all" || l.color===Rep.side) &&
     (!q || l.name.toLowerCase().includes(q) || (l.chapter||"").toLowerCase().includes(q) || l.moves.join(" ").toLowerCase().includes(q)));
   const groups = new Map();
-  list.forEach(l=>{ const c = l.chapter || "Sans chapitre"; if(!groups.has(c)) groups.set(c, []); groups.get(c).push(l); });
+  const byChapter = Rep.sort === "chap";
+  list.forEach(l=>{ const c = byChapter ? (l.chapter || "Sans chapitre") : SORTS[Rep.sort]; if(!groups.has(c)) groups.set(c, []); groups.get(c).push(l); });
   const chaps = [...groups.keys()].sort((a,b)=>a.localeCompare(b,"fr"));
   if(!chaps.length) h += `<p class="muted">Aucune variante ne correspond.</p>`;
   for(const c of chaps){
-    const ls = groups.get(c).sort((a,b)=>a.moves.join(" ").localeCompare(b.moves.join(" ")));
+    const ls = groups.get(c).sort(sortFns[Rep.sort]);
     h += `<div class="chapter"><div class="chapter-h"><h3>${esc(c)}</h3><span class="c">${ls.length}</span></div>`;
     for(const l of ls){
       h += `<div class="line">
         <div style="min-width:0"><div class="nm"><span class="sidec ${l.color}" title="${l.color==="w"?"Blancs":"Noirs"}"></span>${Rep.renaming===l.id ? `<input id="rep-rename" value="${esc(l.name)}" aria-label="Nouveau nom" style="flex:1;min-width:0;border:1px solid var(--accent);border-radius:6px;padding:3px 8px;background:var(--bg)" data-id="${l.id}"><button class="btn small primary" data-act="rename-ok" data-id="${l.id}">OK</button><button class="btn small ghost" data-act="rename-cancel" data-id="${l.id}">Annuler</button>` : esc(l.name)} ${statusChip(l)}${l.example?` <span class="chip ex">Exemple</span>`:""}</div>
-        <div class="mvs">${movesText(l.moves)}</div></div>
+        <div class="mvs">${byChapter ? "" : `<span style="color:var(--accent)">${esc(l.chapter || "Sans chapitre")}</span> · `}${movesText(l.moves)}</div></div>
         <div class="act">
           <button class="btn small" data-act="train" data-id="${l.id}">Entraîner</button>
           <button class="btn small ghost" data-act="edit" data-id="${l.id}" title="Ouvrir le chapitre en arbre pour ajouter ou prolonger des branches">Arbre</button>
@@ -715,6 +726,9 @@ $("#view-rep").addEventListener("click", async e=>{
   }
 });
 $("#view-rep").addEventListener("keydown", e=>{ if(e.target.id==="rep-rename"){ if(e.key==="Enter") $('[data-act="rename-ok"]').click(); if(e.key==="Escape") $('[data-act="rename-cancel"]').click(); } });
+$("#view-rep").addEventListener("change", e=>{
+  if(e.target.id==="rep-sort"){ Rep.sort = e.target.value; try{ localStorage.setItem("carnet-tri", Rep.sort); }catch(err){} renderRep(); }
+});
 $("#view-rep").addEventListener("input", e=>{
   if(e.target.id==="rep-q"){ Rep.q = e.target.value; const pos = e.target.selectionStart; renderRep(); const i = $("#rep-q"); i.focus(); i.setSelectionRange(pos,pos); }
 });
